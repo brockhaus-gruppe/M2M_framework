@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	
+	<!-- JDBC adapter -->
+	<bean name="jdbc_adapter"
+		class="de.brockhaus.m2m.receiver.rdbms.M2MJdbcAdapter" 
+		init-method="init"
+		scope="singleton" >
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next" ref="json_converter" />
+	
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	
+    	<property name="datasource" ref="datasource"/>
+    	
+		<property name = "query">
+			<value>SELECT * FROM SENSORDATA</value>
+		</property>
+		
+		<!-- mapping between a M2MSensorMessage and the columns we get by the JDBC ResultSet -->
+		<property name="sensorMessageMapping">
+			<map>
+				<entry key="sensorId" value="SENSOR_ID" />
+				<entry key="datatype" value="DATATYPE" />
+				<entry key="time" value="TIME" />
+				<entry key="value" value="VALUE" />
+			</map>
+		</property>
+		
+	</bean>	
+	
+		<!-- converting the message to JSON -->
+	<bean name="json_converter"
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" scope="prototype">
+		
+		<!-- doing nothing  
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		-->
+		<!-- the next handler in line, see below --> 
+		<constructor-arg ref="dummy_sender" />
+		
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	
+	</bean>
+	
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender"
+		class="de.brockhaus.m2m.sender.DummySendingWorker" scope="prototype">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+	
+	</bean>
+	
+
+	<!-- ********************************** utilities and other ********************************** --> 
+	<!-- Scheduling -->
+	<bean name="m2m_scheduler"
+		class="de.brockhaus.m2m.util.M2MTaskScheduler"
+		scope="singleton" >
+		
+		<property name = "target" ref = "jdbc_adapter"/>
+		
+		<!-- how long to wait once started -->
+		<property name = "initialDelay">
+			<value>1000</value>
+		</property>
+		
+		
+		<!-- delay between two invocations -->
+    	<property name = "delay">
+			<value>2000</value>
+		</property>
+		
+		<!-- if granted -->
+		<property name="timeUnit">
+			<value>MILLISECONDS</value>
+		</property>
+
+	</bean>	
+	
+	<!-- the datasource -->
+	<bean name="datasource"
+		class="de.brockhaus.m2m.util.M2MJdbcDataSource"
+		scope="singleton" >
+		
+		<!-- the jdbc driver -->
+		<property name = "driver">
+			<value>org.h2.Driver</value>
+		</property>
+		
+		<!-- where to find the database -->
+    	<property name = "url">
+			<value>jdbc:h2:tcp://localhost///media/DataOne/work/projects/Industry40/database/data/sensordata</value>
+		</property>
+		
+		<!-- user -->
+		<property name="username">
+			<value>sa</value>
+		</property>
+		
+		<!-- password -->
+		<property name="password">
+			<value></value>
+		</property>
+	</bean>	
+
+</beans>

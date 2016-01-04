@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	
+	<!-- filtering the sensor ids -->
+	<bean name="timebuffer_handler"
+		class="de.brockhaus.m2m.handler.buffer.M2MMessageTimeBufferHandler"
+		scope="singleton" >
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+
+	</bean>	
+
+	<!-- ********************************** utilities and other ********************************** --> 
+	<!-- the timer for flushing the buffer -->
+	<bean name="timer"
+		class="de.brockhaus.m2m.handler.buffer.MessageBufferScheduler"
+		init-method="init"
+		scope="singleton" >
+		
+    	<!-- how long to wait before initial execution -->
+		<property name="initialDelay" value="10000" />
+
+		<!-- how long to wait before initial execution -->
+		<property name="delay" value="10000" />
+		
+		<!-- how long to wait before initial execution -->
+		<property name="timeUnit" value="MILLISECONDS" />
+		
+			<!-- how long to wait before initial execution -->
+		<property name="handler" ref="timebuffer_handler" />
+	</bean>	
+
+</beans>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	<!-- the adapter where everything starts -->
+	<bean name="file_adapter" class="de.brockhaus.m2m.receiver.file.FileAdapter" init-method="init">
+		
+		<!-- the next handler in line, see below -->
+		<constructor-arg ref="json_converter" />
+		
+		<!-- doing nothing 
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		 -->
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+		
+		
+		<!-- The file names we're interested in and the sensor type assigned to it -->
+		<property name="fileNamePatterns">
+			<map>
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2251" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2252_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2252" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2253_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2253" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2254_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2254" />
+				<entry key="PT_DS1_316233.ED01_FA011.AA.R2444_BalActValue.csv" value="PT_DS1_316233.ED01_FA011.AA.R2444" />
+				<entry key="PT_DS1_316233.ED01_FA011.AA.R2445_BalActValue.csv" value="PT_DS1_316233.ED01_FA011.AA.R2445" />
+			</map>
+		</property>
+				
+		<!-- the directory to monitor -->
+		<property name="directory">
+			<value>/media/DataOne/work/projects/testAndTry/ind40/integration_base/src/test/resources/in/</value>
+		</property>	
+		
+		<!-- who deals with the file once read -->
+		<property name="fileReadHandler" ref = "file_read_handler" />
+		
+		<!-- who deals with the file once content is sent -->
+		<property name="fileSendHandler">
+			<null/>
+		</property>
+		
+	</bean>
+	
+	<!-- converting the message to JSON -->
+	<bean name="json_converter"
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" scope="prototype">
+		
+		<!-- doing nothing  
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		-->
+		<!-- the next handler in line, see below --> 
+		<constructor-arg ref="dummy_sender" />
+		
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	
+	</bean>
+	
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender"
+		class="de.brockhaus.m2m.sender.DummySendingWorker" scope="prototype">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+	
+	</bean>
+	
+	<!-- JMS based sending using ActiveMQ -->
+	<bean name="jms_sender"
+		class="de.brockhaus.m2m.sender.JMSActiveMQSendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- who deals with the file once content is sent -->
+		<property name="msgDestName">
+			<value>myTopic</value>
+		</property>
+		
+		<property name="shutdownAfterSending">
+			<value>true</value>
+		</property>
+    	
+    	<!-- how to send, @see: http://activemq.apache.org/activemq-4-connection-uris.html -->
+    	<property name="brokerConfig">
+			<value>tcp://localhost:61616?jms.useAsyncSend=true</value>
+		</property>
+	
+	</bean>
+	
+	<!-- RMI based sending -->
+	<bean name="rmi_sender"
+		class="de.brockhaus.m2m.sender.RMISendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- IP or DNS name -->
+		<property name="host">
+			<value>localhost</value>
+		</property>
+		
+		<!-- th eport used -->
+		<property name="port">
+			<value>1099</value>
+		</property>
+    	
+    	<!-- under which name bound to Naming -->
+    	<property name="bindingName">
+			<value>m2m_rmi_receiver</value>
+		</property>
+	
+	</bean>
+	
+
+	<!-- ********************************** utilities and other ********************************** -->
+
+	<bean name="websocket_worker" class="de.brockhaus.m2m.handler.pushNotification.WebSocketPushWorker" />
+	<bean name="file_read_handler" class="de.brockhaus.m2m.receiver.file.IOMFileHandler" />
+	
+</beans>

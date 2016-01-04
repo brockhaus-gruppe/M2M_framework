@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" scope="prototype">
+		<!-- the next handler in line, see below -->
+		<constructor-arg ref="sensorfilter_handler" />
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+	</bean>
+	
+	<!-- filtering the sensor ids -->
+	<bean name="sensorfilter_handler"
+		class="de.brockhaus.m2m.handler.filter.M2MMessageSensorFilterHandler"
+		init-method="init" 
+		destroy-method="cleanUp" 
+		scope="singleton" >
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- who might pass (if not configured by config service) -->
+		<property name="sensorIds">
+			<list>
+            	<value>PT_DS1_316233.ED01_FA011.AA.R244</value>
+        	</list>
+		</property>
+		
+		<property name = "useConfigService4Filtering">
+			<value>true</value>
+		</property>
+		
+		<property name = "listenerStub" ref = "remote_config_listener"/>
+		
+		<!-- notification of config changes -->
+    	<property name = "notificationByConfigService">
+			<value>true</value>
+		</property>
+		
+		<!-- if granted -->
+		<property name="nextOnPass" ref = "json_converter" />
+		
+		<!-- if filtered -->
+		<property name="nextOnFilter">
+			<null/>
+		</property>	
+
+	</bean>	
+	
+	<!-- converting the message to JSON -->
+	<bean name="json_converter"
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" scope="singleton">
+		
+		<!-- doing nothing  
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		-->
+		<!-- the next handler in line, see below --> 
+		<constructor-arg ref="http_sender" />
+		
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	
+	</bean>
+	
+	
+	<!-- sending through http -->
+	<bean name="http_sender"
+		class="de.brockhaus.m2m.sender.HTTPSendingWorker" scope="singleton">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- who deals with the file once content is sent -->
+		<property name="url">
+			<value>http://localhost:8080/sensorData/sensorDataReceiver</value>
+		</property>
+	
+	</bean>	
+	
+
+	<!-- ********************************** utilities and other ********************************** --> 
+	<bean name = "remote_config_listener" 
+		class = "de.brockhaus.m2m.config.ConfigurationChangeRemoteListenerStub" 
+		init-method="init" 
+
+		scope = "prototype">
+	
+	</bean>
+
+</beans>

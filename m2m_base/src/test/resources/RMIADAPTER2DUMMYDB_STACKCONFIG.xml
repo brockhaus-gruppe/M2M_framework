@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	<!-- RMI based receiving -->
+	<bean name="rmi_adapter"
+		class="de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiverAdapter" 
+		scope="singleton" 
+		init-method="init" >
+		
+		<!-- the last in line, no following handler  
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		-->
+		
+		<!-- the next handler in line, see below --> 
+		<constructor-arg ref="db_handler" />
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- which machine we're running on -->
+		<property name="host">
+			<value>localhost</value>
+		</property>
+    	<!-- which port we're using -->
+		<property name="port">
+			<value>1099</value>
+		</property>
+		<!-- under what name we're binding the stub -->
+		<property name="bindingName">
+			<value>m2m_rmi_receiver</value>
+		</property>
+	</bean>
+	
+	<!-- storing sensor message 2 persistent storage -->
+	<bean name="db_handler"
+		class="de.brockhaus.m2m.handler.database.DatabaseHandler" scope="singleton">
+		
+		<!-- doing nothing  -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		
+		<!-- the next handler in line, see below  
+		<constructor-arg ref="jms_sender" />
+		-->
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- which dao is to be used? -->
+    	<property name="dao" ref = "dummy_dao" />
+			  	
+	</bean>
+	
+	<!-- ********************************** utilities and other ********************************** -->
+	<bean name="dummy_dao"
+		class="de.brockhaus.m2m.handler.database.dummy.SensorDataDummyDAO" scope="singleton" />
+		
+</beans>

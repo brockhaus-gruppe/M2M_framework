@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>    
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
+
+	<aop:aspectj-autoproxy/>
+	
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" scope="singleton">
+		<!-- the next handler in line, see below -->
+		<constructor-arg ref="json_converter" />
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+	</bean>
+	
+	<!-- converting the message to JSON -->
+	<bean name="json_converter"
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" scope="singleton">
+		
+		<!-- doing nothing  
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		-->
+		<!-- the next handler in line, see below --> 
+		<constructor-arg ref="dummy_sender" />
+		
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	
+	</bean>
+	
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender"
+		class="de.brockhaus.m2m.sender.DummySendingWorker" scope="singleton">
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+	
+	</bean>
+
+	<!-- ********************************** utilities and other ********************************** -->
+
+	<!-- Logging Aspect -->
+	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect" />
+</beans>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- ********************************** handler chain configuration ********************************** -->
+	
+	<!-- the adapter where everything starts -->
+	<bean name="file_adapter" class="de.brockhaus.m2m.receiver.file.FileAdapter" init-method="init">
+		
+		<!-- the next handler in line, see below -->
+		<constructor-arg ref="db_handler" />
+		
+		<!-- doing nothing 
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		 -->
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+		
+		
+		<!-- The file names we're interested in and the sensor type assigned to it -->
+		<property name="fileNamePatterns">
+			<map>
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2251" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2252_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2252" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2253_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2253" />
+				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2254_Setpoint.csv" value="PT_DS1_316233.ED01_AB219_M04.AS.V2254" />
+				<entry key="PT_DS1_316233.ED01_FA011.AA.R2444_BalActValue.csv" value="PT_DS1_316233.ED01_FA011.AA.R2444" />
+				<entry key="PT_DS1_316233.ED01_FA011.AA.R2445_BalActValue.csv" value="PT_DS1_316233.ED01_FA011.AA.R2445" />
+			</map>
+		</property>
+				
+		<!-- the directory to monitor -->
+		<property name="directory">
+			<value>/media/DataOne/work/projects/testAndTry/ind40/integration_base/src/test/resources/in/</value>
+		</property>	
+		
+		<!-- who deals with the file once read -->
+		<property name="fileReadHandler" ref = "file_read_handler" />
+		
+		<!-- who deals with the file once content is sent -->
+		<property name="fileSendHandler">
+			<null/>
+		</property>
+		
+	</bean>
+	
+	
+	<!-- storing sensor message 2 persistent storage -->
+	<bean name="db_handler"
+		class="de.brockhaus.m2m.handler.database.DatabaseHandler" scope="singleton">
+		
+		<!-- doing nothing  -->
+		<constructor-arg name = "next">
+			<null />
+		</constructor-arg>
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	
+    	<!-- which dao is to be used? -->
+    	<property name="dao" ref = "cassandra-dao" />
+			  	
+	</bean>
+	
+		
+
+	<!-- ********************************** utilities and other ********************************** -->
+	<bean name="file_read_handler" class="de.brockhaus.m2m.receiver.file.IOMFileHandler" />
+	
+		<bean name="cassandra-dao"
+		class="de.brockhaus.m2m.handler.database.cassandra.SensorDataCassandraDAO" scope="singleton" 
+		init-method = "init"
+		destroy-method = "shutDown">
+	
+		<constructor-arg ref="cassandra-datasource" />
+	</bean>
+		
+		
+	<bean name="cassandra-datasource"
+		class="de.brockhaus.m2m.handler.database.cassandra.CassandraDataSource" scope="singleton">
+		
+		<property name="hostIP">
+			<value>127.0.0.1</value>
+		</property>
+		
+		<property name="keyspace">
+			<value>sensors</value>
+		</property>
+	</bean>
+	
+</beans>
