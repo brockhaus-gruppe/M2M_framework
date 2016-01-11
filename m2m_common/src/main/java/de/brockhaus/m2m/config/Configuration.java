@@ -10,7 +10,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * 
  * A generic thing to define, store and retrieve values configuring the framework.
  * If using JSON, a configuration might look like this:
  {
@@ -29,11 +28,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
     }
   }
 }
- * Project: integration_config
+ *
+ * Project: m2m-common
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, May 5, 2015
+ * @author mbohnen, Jan 6, 2016
  *
  */
 // @Singleton // will not work with Jersey unfortunately
