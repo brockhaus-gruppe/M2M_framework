@@ -2,11 +2,12 @@ package de.brockhaus.m2m.config;
 
 /**
  * 
- * Project: integration_config
+ *
+ * Project: m2m-common
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, May 16, 2015
+ * @author mbohnen, Jan 7, 2016
  *
  */
 public interface ConfigSerializer {
