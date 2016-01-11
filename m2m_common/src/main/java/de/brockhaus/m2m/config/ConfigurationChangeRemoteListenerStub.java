@@ -59,5 +59,4 @@ public class ConfigurationChangeRemoteListenerStub extends UnicastRemoteObject i
 	public void setConfigService(ConfigurationService configService) {
 		this.configService = configService;
 	}
-
 }
