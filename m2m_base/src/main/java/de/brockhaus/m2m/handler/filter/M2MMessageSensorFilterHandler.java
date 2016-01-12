@@ -136,7 +136,7 @@ public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler imp
 	
 	public void init() {
 		
-		// populating the filter list from config file
+		// populating the filter list from config service / file
 		if(useConfigService4Filtering) {
 			try {
 				this.configService = ConfigServerRMIConnector.doConnect();
@@ -184,7 +184,6 @@ public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler imp
 		this.nextOnFilter = nextOnFilter;
 	}
 
-
 	public boolean isUseConfigService4Filtering() {
 		return useConfigService4Filtering;
 	}
@@ -216,6 +215,4 @@ public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler imp
 	public void setListenerStub(ConfigurationChangeRemoteListenerStub listenerStub) {
 		this.listenerStub = listenerStub;
 	}
-	
-	
 }

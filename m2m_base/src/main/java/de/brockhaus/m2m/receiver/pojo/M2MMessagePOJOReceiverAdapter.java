@@ -45,7 +45,7 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		
 		LOG.debug("handling message");
 
@@ -57,7 +57,9 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
 		this.setMessage(message);
 	}
 	
+	/*	*/
 	public void doFoo() {
 		LOG.debug("doFoo");
 	}
+
 }

@@ -82,7 +82,6 @@ public class POJOAdapter2DummySenderTest {
 				multi.getSensorDataMessageList().clear();
 			}
 			
-
 			try {
 				Thread.currentThread().sleep(interval);
 			} catch (InterruptedException e) {

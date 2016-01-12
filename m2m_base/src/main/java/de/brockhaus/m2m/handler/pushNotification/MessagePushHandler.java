@@ -88,7 +88,4 @@ public class MessagePushHandler extends AbstractM2MMessageHandler {
 	public void setSensorIds(List<String> sensorIds) {
 		this.sensorIds = sensorIds;
 	}
-	
-	
-
 }
