@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
@@ -32,6 +33,7 @@ public class PerformanceLogAspect {
 //	@Around(   "execution (* de.brockhaus.m2m.config.aspect.Foo.doFoo(..)) ||" 
 //			+ " execution (public * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.bla(..))"
 //			)
+	@Around("execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))")
 	public Object logAroundExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
 		Object result = null;
