@@ -3,8 +3,8 @@ package de.brockhaus.m2m.aspect;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
@@ -15,6 +15,9 @@ import org.aspectj.lang.annotation.Aspect;
  * Some pretty useful examples of how to define pointcuts are given here:
  * http://blog.espenberntsen.net/2010/03/20/aspectj-cheat-sheet/
  * http://stackoverflow.com/questions/8426308/how-to-specify-single-pointcut-for-multiple-packages
+ * 
+ * There's a bug within the xml configuration
+ * @see: https://brockhaus.atlassian.net/browse/MF-9
  * 
  * Project: m2m-common
  *
@@ -32,6 +35,7 @@ public class PerformanceLogAspect {
 //	@Around(   "execution (* de.brockhaus.m2m.config.aspect.Foo.doFoo(..)) ||" 
 //			+ " execution (public * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.bla(..))"
 //			)
+	@Around("execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))")
 	public Object logAroundExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
 		Object result = null;
