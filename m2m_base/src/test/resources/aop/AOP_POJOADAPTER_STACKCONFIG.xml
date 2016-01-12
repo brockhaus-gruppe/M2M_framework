@@ -1,49 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?>    
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
-	http://www.springframework.org/schema/aop 
-	http://www.springframework.org/schema/aop/spring-aop-3.0.xsd ">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 
 	<!-- Enable AspectJ style of Spring AOP -->
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
-	
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
 	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
 
 	<!-- ********************************** handler chain configuration ********************************** -->
-	
-	<bean name="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler" abstract="true" />
-	
-	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" scope="singleton">
-		<!-- doing nothing  -->
-		<constructor-arg name = "next">
+
+	<bean name="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler"
+		abstract="true" />
+
+	<bean name="pojo_adapter"
+		class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter"
+		scope="singleton">
+		<!-- doing nothing -->
+		<constructor-arg name="next">
 			<null />
 		</constructor-arg>
 
 		<!-- the accepted message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
-    	</constructor-arg>
-    	<!-- the sent message type -->
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+		</constructor-arg>
+		<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
-    	</constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+		</constructor-arg>
 	</bean>
-	
+
 	<!-- ********************************** utilities and other ********************************** -->
 
 
 	<!-- *********************************** AOP ************************************************* -->
 	<!-- Performance Logging Aspect -->
-	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect" scope="prototype" />
-		<aop:config>
+	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect"
+		scope="prototype" />
+	<aop:config>
 		<aop:aspect id="aspectLogging" ref="logAspect">
 			<aop:pointcut id="pointCutAroundM2MMessagePOJOReceiverAdapter"
 				expression="execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))" />
-			<aop:around method="logAroundExecutionTime" pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
+			<aop:around method="logAroundExecutionTime"
+				pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
 		</aop:aspect>
 	</aop:config>
-	
+	<!-- this switches on the load-time weaving -->
+	<context:load-time-weaver aspectj-weaving="on" />
 </beans>

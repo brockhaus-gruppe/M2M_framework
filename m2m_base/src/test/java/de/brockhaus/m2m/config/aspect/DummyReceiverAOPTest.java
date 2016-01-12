@@ -24,6 +24,7 @@ import de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter;
  * www.brockhaus-gruppe.de
  * @author mbohnen, Dec 27, 2015
  *
+ * must add argument : -javaagent:"path-to\spring-instrument-4.2.4.RELEASE.jar for VM
  */
 public class DummyReceiverAOPTest {
 
