@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>    
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:context="http://www.springframework.org/schema/context"
@@ -9,7 +9,10 @@
 	<!-- Enable AspectJ style of Spring AOP -->
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 009c5e58466d8b38fe9e4c7ce74d072e4ac4ae11
 	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
 
 	<!-- ********************************** handler chain configuration ********************************** -->
@@ -40,8 +43,13 @@
 
 	<!-- *********************************** AOP ************************************************* -->
 	<!-- Performance Logging Aspect -->
+<<<<<<< HEAD
 	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect" scope="prototype" />
 	
+=======
+	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect"
+		scope="prototype" />
+>>>>>>> 009c5e58466d8b38fe9e4c7ce74d072e4ac4ae11
 	<aop:config>
 		<aop:aspect id="aspectLogging" ref="logAspect">
 			<aop:pointcut id="pointCutAroundM2MMessagePOJOReceiverAdapter"
