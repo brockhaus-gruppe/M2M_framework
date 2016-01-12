@@ -31,11 +31,8 @@ public class PerformanceLogAspect {
 	
 	private static Logger LOG = Logger.getLogger(PerformanceLogAspect.class);
 
-//  This option is skipped for the favour of xml based configuration
-//	@Around(   "execution (* de.brockhaus.m2m.config.aspect.Foo.doFoo(..)) ||" 
-//			+ " execution (public * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.bla(..))"
-//			)
-	@Around("execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))")
+	//  This option should be skipped for the favour of xml based configuration
+//	@Around("execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))")
 	public Object logAroundExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
 
 		Object result = null;
