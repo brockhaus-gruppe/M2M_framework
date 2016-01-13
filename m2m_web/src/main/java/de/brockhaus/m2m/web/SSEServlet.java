@@ -15,20 +15,21 @@ import org.apache.log4j.Logger;
 import de.brockhaus.m2m.web.util.DataContainer;
 
 /**
- * The incoming data will be pushed to the connected html page (a primitive example is provided by SSE.html).
+ * The incoming data will be pushed to the connected html page 
+ * (a primitive example is provided by SSE.html).
  * 
  * For more details on Server-Sent-Events:
  * http://milestonenext.blogspot.de/2013/07/html5-server-sent-events-sample-with.html
  * https://blog.rasc.ch/?p=2043
- * 
- * Project: communication.web
  *
- * Copyright (c) by Brockhaus Group www.brockhaus-gruppe.de
- * 
- * @author mbohnen, May 3, 2015
+ * Project: m2m-web
+ *
+ * Copyright (c) by Brockhaus Group
+ * www.brockhaus-gruppe.de
+ * @author mbohnen, Jan 13, 2016
  *
  */
-@WebServlet("/SensorDataServer")
+@WebServlet("/sseDataPush")
 public class SSEServlet extends HttpServlet {
 
 	private static final Logger LOG = Logger.getLogger(SSEServlet.class);
@@ -69,6 +70,7 @@ public class SSEServlet extends HttpServlet {
 			for (String json : container.getValues()) {
 				String msg = json.replaceAll("\n", "");
 				writer.write("data: " + msg + "\n\n");
+				
 				// Do not close the writer!
 				writer.flush();
 				container.removeValue(json);
@@ -77,7 +79,6 @@ public class SSEServlet extends HttpServlet {
 		} else {
 			// Do not close the writer!
 			writer.flush();	
-		}
-		
+		}	
 	}
 }
