@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+ <h1>Sensor Data  : </h1>
+
+ <div id="sensor_data"></div>
+
+ <script>
+  if (typeof (EventSource) !== "undefined") {
+   var source = new EventSource("http://localhost:8080/sensorData/SensorDataServer");
+   source.onmessage = function(event) {
+    document.getElementById("sensor_data").innerHTML += event.data
+      + "<br><br>";
+   };
+  } else {
+   document.getElementById("sensor_data").innerHTML = "Sorry, your browser does not support server-sent events...";
+  }
+ </script>
+ 
+ 
+
+</body>
+</html>

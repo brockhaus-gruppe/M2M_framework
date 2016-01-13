@@ -1,0 +1,134 @@
+html, body {
+    margin: 0;
+    padding : 0;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+    width: 100%;
+}
+
+#header {
+    position: absolute;
+    top:  0px;
+    left: 0px;
+    width: 100%;
+    height: 48px;
+    font-family:  Helvetica, Verdana, sans-serif;
+   /* background-Color: #555;*/
+    /*background: linear-gradient(to bottom, #eeeeee 0%,#aaaaaa 79%); /* W3C */
+    background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#d6d6d6 100%); /* W3C */
+}
+
+
+#chart{
+    left: -50px;
+    margin-top: 100px;
+    margin-right: 10px;
+    width: 80%;
+    float: left;
+}
+
+#footer{
+    position: absolute;
+    bottom:  0px;
+    left: 0px;
+    width: 100%;
+    height: 48px;
+    /*background: linear-gradient(to bottom, #aaaaaa 1%,#eeeeee 80%,#eeeeee 100%); /* W3C */
+    background: linear-gradient(to top, #ffffff 0%,#f6f6f6 47%,#d6d6d6 100%); /* W3C */
+
+}
+#footer p{
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+    font-family:  Helvetica, Verdana, sans-serif;
+    color:#808080;
+}
+
+/*buttons*/
+#header button{
+    border-radius:3px;
+    margin-top: 3px;
+    height: 80%;
+    margin-left: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* W3C */
+}
+#header button:hover{
+    background:white;
+}
+#buttons_container{
+      height: 100%;
+    float: left;
+    margin-left: 10px;
+}
+
+/*sensors list*/
+#sensor_list{
+    float: left;
+    width: 15%;
+    height:400px;
+    left:0px;
+    right: 0px;
+    bottom: 0px;
+
+    margin-top: 100px;
+    overflow: auto;
+    border-bottom: solid #808080;
+    overflow-y : scroll;
+}
+h2 {
+  font: 400 20px/1.5 Helvetica, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  margin-left: 10px;
+  font-weight: bold;
+}
+#sensor_list h2{
+ margin-bottom: 3px;
+}
+ 
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ 
+li {
+  margin-left:10px;
+  font: 200 12px/1.5;
+  border-bottom: 1px solid #ccc;
+}
+ 
+li:last-child {
+  border: none;
+}
+ 
+li a {
+  text-decoration: none;
+  color: #000;
+  display: block;
+  width: 100%;
+ 
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+}
+ 
+li a:hover {
+  
+  color: #f6f6f6;
+}
+
+.navbar-logo{
+    margin-top: 3px;
+    margin-left: 3px;
+    float: left;
+}
+
+.bt-selected{
+    /*background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#ededed 100%); /* W3C */
+    background: linear-gradient(to bottom, #e1ffff 0%,#e1ffff 7%,#e1ffff 12%,#fdffff 12%,#e6f8fd 30%,#c8eefb 54%,#bee4f8 75%,#b1d8f5 100%); /* W3C */
+}
