@@ -27,6 +27,8 @@ import de.brockhaus.m2m.util.ConfigServerRMIConnector;
  *
  */
 public class POJOAdapter2HTTPTest {
+	
+	private static final String configFile = "POJOADAPTER2HTTP_STACKCONFIG.xml";
 
 	private M2MMessagePOJOReceiverAdapter adapter;
 
@@ -42,10 +44,8 @@ public class POJOAdapter2HTTPTest {
 
 	private void init() {
 
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-				"POJOADAPTER2HTTP_STACKCONFIG.xml");
-		adapter = (M2MMessagePOJOReceiverAdapter) context
-				.getBean("pojo_adapter");
+		ApplicationContext context = new ClassPathXmlApplicationContext(POJOAdapter2HTTPTest.configFile);
+		adapter = (M2MMessagePOJOReceiverAdapter) context.getBean("pojo_adapter");
 		
 		//populate the list
 		try {
