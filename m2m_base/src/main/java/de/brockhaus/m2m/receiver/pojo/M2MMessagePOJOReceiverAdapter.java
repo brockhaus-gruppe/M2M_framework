@@ -56,10 +56,4 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
 		// so this is pro forma ...
 		this.setMessage(message);
 	}
-	
-	/*	
-	public void doFoo() {
-		LOG.debug("doFoo");
-	}
-*/
 }
