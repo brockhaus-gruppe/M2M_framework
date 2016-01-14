@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.receiver.file;
+package de.brockhaus.m2m.receiver.file.handler.durr;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,6 +21,9 @@ import org.apache.log4j.Logger;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
+import de.brockhaus.m2m.receiver.file.FileEvent;
+import de.brockhaus.m2m.receiver.file.FileEventHandler;
+import de.brockhaus.m2m.receiver.file.FileHandlerCallback;
 
 /**
  * The specific implementation of a handler capable of DÜRRs IOM files.
