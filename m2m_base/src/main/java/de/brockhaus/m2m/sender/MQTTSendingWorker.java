@@ -70,6 +70,7 @@ public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MS
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
+		LOG.debug("handling message");
 		this.doSend(message);
 	}
 

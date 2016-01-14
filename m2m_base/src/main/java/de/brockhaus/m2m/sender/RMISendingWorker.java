@@ -5,6 +5,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+import org.apache.log4j.Logger;
+
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
@@ -61,6 +63,8 @@ import de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiver;
  */
 public class RMISendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
 	
+	private static final Logger LOG = Logger.getLogger(RMISendingWorker.class);
+	
 	private String host;
 	private String port;
 	private String bindingName;
@@ -99,6 +103,7 @@ public class RMISendingWorker extends AbstractM2MMessageHandler implements M2MSe
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
+		LOG.debug("handling message");
 		this.doSend(message);		
 	}
 
