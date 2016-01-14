@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * wrapping around the Foo class
+ * wrapping around the Foo class 4 aop testing
  *
  * Project: m2m-base
  *
