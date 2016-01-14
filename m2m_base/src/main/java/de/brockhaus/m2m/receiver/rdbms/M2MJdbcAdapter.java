@@ -71,6 +71,7 @@ public class M2MJdbcAdapter extends AbstractM2MMessageHandler implements Runnabl
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
+		LOG.debug("handling message");
 		try {
 			super.doChain(message);
 		} catch (M2MCommunicationException e) {

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
@@ -53,6 +55,8 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  *
  */
 public class DataAggregationHandler extends AbstractM2MMessageHandler {
+	
+	private static final Logger LOG = Logger.getLogger(DataAggregationHandler.class);
 
 	public enum AggregationType {
 		MIN, MAX, AVG
@@ -70,6 +74,7 @@ public class DataAggregationHandler extends AbstractM2MMessageHandler {
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
+		LOG.debug("handling message");
 		
 		// what we get
 		M2MMultiMessage multi = (M2MMultiMessage) message;

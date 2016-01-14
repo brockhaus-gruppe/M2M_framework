@@ -86,9 +86,9 @@ public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler {
 
 		if (this.checkBufferIsFull()) {
 			LOG.debug("Threshold NOT reached");
-			next = this.nextOnBufferPart;
+			super.setNext(this.nextOnBufferPart);
 		} else {
-			next = this.nextOnBufferFull;
+			super.setNext(this.nextOnBufferFull);
 			LOG.debug("Threshold reached, buffer contains: " + buffer.size());
 			List<M2MSensorMessage> clone = (List<M2MSensorMessage>) ((ArrayList<M2MSensorMessage>) buffer).clone();
 
@@ -96,7 +96,7 @@ public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler {
 			msg.setSensorDataMessageList(clone);
 			this.setMessage(msg);
 			
-			super.setCont(true);
+			super.setContinueProceeding(false);
 			buffer.clear();
 		}
 	}

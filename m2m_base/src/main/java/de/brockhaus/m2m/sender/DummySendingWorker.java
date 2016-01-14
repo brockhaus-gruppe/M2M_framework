@@ -31,40 +31,34 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
     	</constructor-arg>
 	
 	</bean>
- * 
- * Project: communication.sender
+ *
+ * Project: m2m-base
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, Apr 11, 2015
+ * @author mbohnen, Jan 14, 2016
  *
  */
 public class DummySendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
 
 	private static final Logger LOG = Logger.getLogger(DummySendingWorker.class);
 	
-	
-
 	public DummySendingWorker() {
-		super();
-		// TODO Auto-generated constructor stub
+		//lazy
 	}
 
 	public DummySendingWorker(M2MMessageHandler next, String inTypeClassName,
 			String outTypeClassName) {
 		super(next, inTypeClassName, outTypeClassName);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void doSend(M2MMessage  message) {
 		LOG.debug("Sending: \n" + ((M2MPlainTextMessage) message).getSensordata());
-		
 	}
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
-
-		this.doSend(message);
-		
+		LOG.debug("handling message");
+		this.doSend(message);	
 	}
 }

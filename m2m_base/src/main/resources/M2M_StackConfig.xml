@@ -12,8 +12,11 @@
 	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
 
 	<!-- ********************************** handler chain configuration ********************************** -->
+	<bean id="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler" abstract="true" scope="singleton">
+  		<property name="continueProceeding" value="true" />
+	</bean>
 
-	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" scope="singleton">
+	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" parent="abstract_handler" scope="singleton">
 		<!-- the next handler in line, see below -->
 		<constructor-arg ref="json_converter" />
 
@@ -25,11 +28,12 @@
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
     	</constructor-arg>
+    	
 	</bean>
 	
 	<!-- converting the message to JSON -->
 	<bean name="json_converter"
-		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" scope="singleton">
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" parent="abstract_handler" scope="singleton">
 		
 		<!-- doing nothing  
 		<constructor-arg name = "next">
@@ -53,7 +57,7 @@
 	
 	<!-- sending 2 a dummy -->
 	<bean name="dummy_sender"
-		class="de.brockhaus.m2m.sender.DummySendingWorker" scope="singleton">
+		class="de.brockhaus.m2m.sender.DummySendingWorker" parent="abstract_handler" scope="singleton">
 		
 		<!-- the last in line, no following handler -->
 		<constructor-arg name = "next">
@@ -68,11 +72,8 @@
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
     	</constructor-arg>
-	
 	</bean>
 	
-	
-
 	<!-- ********************************** utilities and other ********************************** -->
 
 
@@ -83,10 +84,13 @@
 	<aop:config>
 		<aop:aspect id="aspectLogging" ref="logAspect">
 			<aop:pointcut id="pointCutAroundM2MMessagePOJOReceiverAdapter"
-				expression="execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.*(..))" />
+				expression="execution( * de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.handleMessage(..)) ||
+							execution( * de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler.handleMessage(..))" 		
+				/>
 			<aop:around method="logAroundExecutionTime"
 				pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
 		</aop:aspect>
 	</aop:config>
 	-->
+	
 </beans>

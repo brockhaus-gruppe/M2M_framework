@@ -153,6 +153,6 @@
 	<!-- ********************************** utilities and other ********************************** -->
 
 	<bean name="websocket_worker" class="de.brockhaus.m2m.handler.pushNotification.WebSocketPushWorker" />
-	<bean name="file_read_handler" class="de.brockhaus.m2m.receiver.file.IOMFileHandler" />
+	<bean name="file_read_handler" class="de.brockhaus.m2m.receiver.file.handler.durr.IOMFileHandler" />
 	
 </beans>

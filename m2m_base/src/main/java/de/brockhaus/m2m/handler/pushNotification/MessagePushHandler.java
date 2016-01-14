@@ -2,6 +2,8 @@ package de.brockhaus.m2m.handler.pushNotification;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
@@ -50,6 +52,8 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  */
 public class MessagePushHandler extends AbstractM2MMessageHandler {
 
+	private static final Logger LOG = Logger.getLogger(MessagePushHandler.class);
+	
 	// the work will be done in here
 	private M2MMessagePushWorker pushWorker;
 	
@@ -67,6 +71,7 @@ public class MessagePushHandler extends AbstractM2MMessageHandler {
 
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
+		LOG.debug("handling message");
 		if(sensorIds.contains(message.getSensorId())){
 			// delegate to proceed
 			pushWorker.doPush((M2MSensorMessage) message);

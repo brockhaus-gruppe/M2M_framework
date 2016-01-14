@@ -30,19 +30,19 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	private static final Logger LOG = Logger.getLogger(AbstractM2MMessageHandler.class);
 	
 	/** the next in line */
-	protected M2MMessageHandler next;
+	private M2MMessageHandler next;
 
 	/** the type of message the handler can deal with */
-	protected Class inType;
+	private Class inType;
 	
 	/** the type of message the handler will send */
-	protected Class outType;
+	private Class outType;
 
 	/** the message we are dealing with */
-	protected M2MMessage message;
+	private M2MMessage message;
 	
 	/** enforce to skip doChain() */
-	private boolean cont = true;
+	private boolean continueProceeding;
 	
 	/** Constructor */
 	public AbstractM2MMessageHandler() {
@@ -52,7 +52,7 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	/** Constructor */
 	public AbstractM2MMessageHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
 		try {
-			this.next = next;
+			this.setNext(next);
 			this.inType = Class.forName(inTypeClassName);
 			this.outType = Class.forName(outTypeClassName);
 		} catch (ClassNotFoundException e) {
@@ -64,46 +64,53 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	 * template method implementation
 	 */	
 	public final <T extends M2MMessage> void onMessageEvent(T message) throws M2MCommunicationException {
+		// can we deal with incoming message?
+		this.checkInMessageType(message);
 		
 		this.setMessage(message);
 		
-		LOG.trace("checking messagetype");
-		this.checkInMessageType();
-		
-		LOG.trace("handling message");
+		// hand over to subclass
 		this.handleMessage(message);
 		
-		if(null != this.next && cont) {
-			LOG.trace("chaining");
-			this.checkOutMessageType();
+		// we will continue if ...
+		if(null != this.getNext() && this.getContinueProceeding()) {
+			this.checkOutMessageType(this.getMessage());
 			this.doChain(this.message);	
 		}
-		else if (!cont){
+		
+		// stopping
+		else if (this.getContinueProceeding()){
 			LOG.debug("Waiting to continue");
 		}
+		
+		// termination
 		else if (null == this.next){
 			LOG.debug("End of chain");	
 		}
 	}
 
-	/** this needs to be overwritten ... individual handling of message */
+	/** this needs to be overwritten ... individual handling of message by subclass */
 	protected abstract <T extends M2MMessage> void handleMessage(T message);
 
 	/** checking 4 correct type */
-	private void checkInMessageType() throws M2MCommunicationException {
+	private  <T extends M2MMessage> void checkInMessageType(T message) throws M2MCommunicationException {
+		LOG.trace("checking incoming messagetype");
+		
 		// it is important to make use of getters instead of direct access to field as otherwise
 		// CGLIB proxies used in AOP will provide null values for the fields
-		if(! this.getInType().isInstance(this.getMessage())) {
-			throw new M2MCommunicationException("MessageType can't be handeled by adapter");
+		if(! this.getInType().isInstance(message)) {
+			throw new M2MCommunicationException("MessageType can't be handeled by adapter: " + this.getInType());
 		}
 	}
 	
 	/** checking 4 correct type */
-	private void checkOutMessageType() throws M2MCommunicationException {
+	private <T extends M2MMessage> void checkOutMessageType(T message) throws M2MCommunicationException {
+		LOG.trace("checking outgoing messagetype");
+		
 		// it is important to make use of getters instead of direct access to field as otherwise
 		// CGLIB proxies used in AOP will provide null values for the fields
-		if(! this.getOutType().isInstance(this.getMessage())) {
-			throw new M2MCommunicationException("MessageType can't be handeled by adapter");
+		if(! this.getOutType().isInstance(message)) {
+			throw new M2MCommunicationException("MessageType can't be handeled by adapter: " + this.getOutType());
 		}
 	}
 	
@@ -113,26 +120,27 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	 * @throws MMSCommunicationException
 	 */
 	protected final <T extends M2MMessage> void doChain(T message) throws M2MCommunicationException {
-		this.next.onMessageEvent(message);
+		LOG.debug("chaining");
+		M2MMessageHandler handler = this.getNext();
+		this.getNext().onMessageEvent(message);
 	}
 
 	
-	// getter / setter enforced by Spring DI
-	
-	protected final M2MMessageHandler getNext() {
+	// getter / setter enforced by Spring DI, all must be public
+	public final M2MMessageHandler getNext() {
 		return next;
 	}
 
-	protected final void setNext(M2MMessageHandler next) {
+	public final void setNext(M2MMessageHandler next) {
 		this.next = next;
 	}
 
-	protected boolean isCont() {
-		return cont;
+	public boolean getContinueProceeding() {
+		return continueProceeding;
 	}
 
-	protected void setCont(boolean cont) {
-		this.cont = cont;
+	public void setContinueProceeding(boolean stopProceeding) {
+		this.continueProceeding = stopProceeding;
 	}
 
 	public M2MMessage getMessage() {
@@ -143,19 +151,19 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 		this.message = message;
 	}
 
-	public Class getInType() {
+	public Class<?> getInType() {
 		return inType;
 	}
 
-	public void setInType(Class inType) {
+	public void setInType(Class<?> inType) {
 		this.inType = inType;
 	}
 
-	public Class getOutType() {
+	public Class<?> getOutType() {
 		return outType;
 	}
 
-	public void setOutType(Class outType) {
+	public void setOutType(Class<?> outType) {
 		this.outType = outType;
 	}
 }

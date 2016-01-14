@@ -35,8 +35,8 @@ public class StartM2MBaseChain {
 		StartM2MBaseChain test = new StartM2MBaseChain();
 		test.init();
 
-		test.sendByNumbers(6, 1000);
-//		 test.sendForever(1000);
+		test.sendByNumbers(3, 1000);
+//		test.sendForever(10o);
 	}
 
 	private static void init() {
@@ -98,8 +98,7 @@ public class StartM2MBaseChain {
 		
 		M2MMultiMessage multi = new M2MMultiMessage();
 		
-		while (true) {
-			
+		while (true) {	
 			// random element from list
 			Random random = new Random(System.currentTimeMillis());
 			int index = random.nextInt(this.sensors.size());
@@ -123,7 +122,6 @@ public class StartM2MBaseChain {
 				adapter.onMessageEvent(multi);	
 				multi.getSensorDataMessageList().clear();
 			}
-			
 
 			try {
 				Thread.currentThread().sleep(interval);
@@ -133,5 +131,4 @@ public class StartM2MBaseChain {
 			}
 		}
 	}
-
 }

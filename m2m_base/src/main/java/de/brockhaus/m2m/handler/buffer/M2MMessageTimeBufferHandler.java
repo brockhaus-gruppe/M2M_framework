@@ -48,7 +48,7 @@ public class M2MMessageTimeBufferHandler extends AbstractM2MMessageHandler imple
 		this.buffer.add((M2MSensorMessage) message);
 		
 		// avoid chaining right now
-		super.setCont(false);
+		super.setContinueProceeding(true);
 		
 		// nothing else will happen
 	}

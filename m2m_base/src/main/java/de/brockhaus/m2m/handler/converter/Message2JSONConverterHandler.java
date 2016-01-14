@@ -52,19 +52,17 @@ public class Message2JSONConverterHandler extends AbstractM2MMessageHandler {
 		super();
 	}
 
-
 	public Message2JSONConverterHandler(M2MMessageHandler next,
 			String inTypeClassName, String outTypeClassName) {
 		super(next, inTypeClassName, outTypeClassName);
 	}
 
-
 	@Override
 	protected <T extends M2MMessage> void handleMessage(T message) {
-		
-		LOG.debug("Serialization of: " + message.getClass().getSimpleName());
+		LOG.debug("handling message");
+		LOG.trace("Serialization of: " + message.getClass().getSimpleName());
 		String json = JSONBuilderParserUtil.getInstance().toJSON(message);
-		LOG.debug("Serialization 2 JSON: \n" + json + "\n\n");
+		LOG.trace("Serialization 2 JSON: \n" + json + "\n\n");
 		
 		M2MPlainTextMessage msg = new M2MPlainTextMessage();
 		msg.setSensordata(json);
