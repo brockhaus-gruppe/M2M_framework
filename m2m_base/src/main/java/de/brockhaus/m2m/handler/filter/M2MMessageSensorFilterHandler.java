@@ -116,7 +116,7 @@ public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler imp
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		String id = ((M2MSensorMessage) message).getSensorId();
 		if(sensorIds.contains(id)) {

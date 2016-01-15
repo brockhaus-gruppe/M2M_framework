@@ -53,7 +53,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  *
  */
 //TODO rename to M2MSizeMessageBufferHandler
-public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler {
+public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler implements M2MMessageHandler {
 
 	private static final Logger LOG = Logger.getLogger(M2MSizeMessageBufferHandler.class);
 
@@ -80,7 +80,7 @@ public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 
 		this.buffer.add((M2MSensorMessage) message);
 

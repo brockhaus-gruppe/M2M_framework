@@ -70,7 +70,7 @@ public class MessagePushHandler extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		if(sensorIds.contains(message.getSensorId())){
 			// delegate to proceed

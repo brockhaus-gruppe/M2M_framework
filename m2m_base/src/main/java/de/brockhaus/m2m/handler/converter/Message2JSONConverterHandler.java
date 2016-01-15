@@ -44,7 +44,7 @@ import de.brockhaus.m2m.util.JSONBuilderParserUtil;
  * @author mbohnen, Apr 10, 2015
  *
  */
-public class Message2JSONConverterHandler extends AbstractM2MMessageHandler {
+public class Message2JSONConverterHandler extends AbstractM2MMessageHandler implements M2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(Message2JSONConverterHandler.class);
 
@@ -58,7 +58,7 @@ public class Message2JSONConverterHandler extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		LOG.trace("Serialization of: " + message.getClass().getSimpleName());
 		String json = JSONBuilderParserUtil.getInstance().toJSON(message);

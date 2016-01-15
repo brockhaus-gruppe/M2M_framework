@@ -14,7 +14,7 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
  * @author mbohnen, Jan 12, 2016
  *
  */
-public class CumulocityAgent extends AbstractM2MMessageHandler implements M2MSendingWorker{
+public class CumulocityAgent extends AbstractM2MMessageHandler implements M2MSendingWorker {
 	
 	//TODO: read by config file
 	private String myUrl;
@@ -44,7 +44,7 @@ public class CumulocityAgent extends AbstractM2MMessageHandler implements M2MSen
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// TODO Auto-generated method stub
 		
 	}

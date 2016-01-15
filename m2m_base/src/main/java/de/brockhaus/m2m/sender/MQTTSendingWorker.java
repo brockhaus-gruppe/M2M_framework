@@ -1,5 +1,6 @@
 package de.brockhaus.m2m.sender;
 
+import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -25,6 +26,8 @@ import de.brockhaus.m2m.util.MQTTUtil.ClientType;
  *
  */
 public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
+	
+	private static final Logger LOG = Logger.getLogger(MQTTSendingWorker.class);
 
 	private MqttClient client;
 	
@@ -69,7 +72,7 @@ public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MS
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		this.doSend(message);
 	}

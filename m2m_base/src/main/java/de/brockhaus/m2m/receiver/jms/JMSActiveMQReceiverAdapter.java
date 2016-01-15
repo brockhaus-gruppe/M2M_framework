@@ -122,7 +122,7 @@ public class JMSActiveMQReceiverAdapter extends AbstractM2MMessageHandler
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// nothing to do here ... all is done within onMessage()
 	}
 

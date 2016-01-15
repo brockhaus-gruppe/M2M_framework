@@ -66,7 +66,7 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
  * @author mbohnen, Apr 11, 2015
  *
  */
-public class JMSActiveMQSendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
+public class JMSActiveMQSendingWorker extends AbstractM2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(JMSActiveMQSendingWorker.class);
 	
@@ -116,7 +116,7 @@ public class JMSActiveMQSendingWorker extends AbstractM2MMessageHandler implemen
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		this.doSend(message);
 		

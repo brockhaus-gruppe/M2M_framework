@@ -115,7 +115,7 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		
 		LOG.debug("handling message");
 		try {

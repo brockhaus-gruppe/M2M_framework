@@ -85,7 +85,7 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		
 		M2MMultiMessage msg = new M2MMultiMessage();

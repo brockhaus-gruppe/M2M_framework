@@ -57,7 +57,7 @@ public class DummySendingWorker extends AbstractM2MMessageHandler implements M2M
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		this.doSend(message);	
 	}

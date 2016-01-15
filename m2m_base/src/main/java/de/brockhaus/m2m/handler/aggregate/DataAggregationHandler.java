@@ -54,7 +54,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * @author mbohnen, Dec 9, 2015
  *
  */
-public class DataAggregationHandler extends AbstractM2MMessageHandler {
+public class DataAggregationHandler extends AbstractM2MMessageHandler implements M2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(DataAggregationHandler.class);
 
@@ -73,7 +73,7 @@ public class DataAggregationHandler extends AbstractM2MMessageHandler {
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		
 		// what we get
