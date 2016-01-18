@@ -19,10 +19,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * 
  	<!-- buffering -->
 	<bean name="buffer_handler"
-		class="de.brockhaus.m2m.handler.buffer.M2MSizeMessageBufferHandler" scope="singleton">
-		
-		<!-- the next handler in line, see below  -->
-		<constructor-arg ref="json_converter" />		
+		class="de.brockhaus.m2m.handler.buffer.M2MSizeMessageBufferHandler" scope="singleton">	
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
@@ -31,7 +28,6 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
     	</constructor-arg>
-    	
 	
 		<!-- will we wait for the size -->
 		<property name="threshold" value = "2" />
@@ -41,8 +37,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 		<property name="nextOnBufferPart">
 			<null />
 		</property>
-		
-
+	
 	</bean>
  * 
  * Project: m2m-base
@@ -74,9 +69,8 @@ public class M2MSizeMessageBufferHandler extends AbstractM2MMessageHandler imple
 		super();
 	}
 
-	public M2MSizeMessageBufferHandler(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MSizeMessageBufferHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

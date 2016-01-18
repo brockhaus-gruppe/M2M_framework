@@ -1,8 +1,9 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.cumlocity;
 
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.sender.M2MSendingWorker;
 
 /**
  * 
@@ -27,9 +28,8 @@ public class CumulocityAgent extends AbstractM2MMessageHandler implements M2MSen
 		// TODO Auto-generated constructor stub
 	}
 
-	public CumulocityAgent(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
-		// TODO Auto-generated constructor stub
+	public CumulocityAgent(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	// @see: http://www.cumulocity.com/guides/java/hello-world-basic/

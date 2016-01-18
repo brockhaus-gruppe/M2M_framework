@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.jms.activemq;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
-import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MPlainTextMessage;
 
 /**
@@ -24,12 +23,7 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
 
 	<!-- JMS based sending using ActiveMQ -->
 	<bean name="jms-sender"
-		class="de.brockhaus.m2m.sender.JMSActiveMQSendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
-		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
+		class="de.brockhaus.m2m.sender.jms.activemq.JMSActiveMQSendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -85,9 +79,8 @@ public class JMSActiveMQSendingWorker extends AbstractM2MMessageHandler {
 		super();
 	}
 
-	public JMSActiveMQSendingWorker(M2MMessageHandler next,
-			String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public JMSActiveMQSendingWorker(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	public void doSend(M2MMessage msg) {

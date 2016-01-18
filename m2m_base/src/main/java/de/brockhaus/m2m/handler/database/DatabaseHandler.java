@@ -18,15 +18,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  	<!-- storing sensor message 2 persistent storage -->
 	<bean name="db-handler"
 		class="de.brockhaus.m2m.handler.database.DatabaseHandler" scope="singleton">
-		
-		<!-- doing nothing  -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		
-		<!-- the next handler in line, see below  
-		<constructor-arg ref="jms-sender" />
-		-->
+
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MMultiMessage</value>
@@ -71,9 +63,8 @@ public class DatabaseHandler extends AbstractM2MMessageHandler implements M2MMes
 		
 	}
 
-	public DatabaseHandler(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public DatabaseHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

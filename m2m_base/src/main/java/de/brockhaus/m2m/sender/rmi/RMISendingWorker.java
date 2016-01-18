@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.rmi;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -12,6 +12,7 @@ import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiver;
+import de.brockhaus.m2m.sender.M2MSendingWorker;
 
 /**
  * Sending through RMI ... check for the configuration of the receiving part. 
@@ -20,12 +21,8 @@ import de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiver;
 
 	<!-- RMI based sending -->
 	<bean name="rmi_sender"
-		class="de.brockhaus.m2m.sender.RMISendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
+		class="de.brockhaus.m2m.sender.rmi.RMISendingWorker" scope="singleton" init-method="init" destroy-method="cleanUp">
 		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -76,10 +73,8 @@ public class RMISendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		// TODO Auto-generated constructor stub
 	}
 
-	public RMISendingWorker(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
-		// TODO Auto-generated constructor stub
+	public RMISendingWorker(String inTypeClassName,	String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

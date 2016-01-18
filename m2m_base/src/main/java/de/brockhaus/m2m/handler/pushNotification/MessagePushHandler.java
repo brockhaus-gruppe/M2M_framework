@@ -20,9 +20,6 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 	<bean name="push_notification"
 		class="de.brockhaus.m2m.sender.handler.pushNotification.MessagePushHandler" scope="prototype">
 		
-		<!-- the next handler in line, see below --> 
-		<constructor-arg ref="buffer_handler" />
-		
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.sender.handler.M2MSensorMessage</value>
@@ -64,9 +61,8 @@ public class MessagePushHandler extends AbstractM2MMessageHandler {
 		super();
 	}
 
-	public MessagePushHandler(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public MessagePushHandler( String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

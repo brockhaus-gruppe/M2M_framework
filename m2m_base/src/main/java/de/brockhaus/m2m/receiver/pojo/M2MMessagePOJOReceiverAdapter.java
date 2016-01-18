@@ -12,12 +12,7 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
  * Example config:
  * 
 	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.POJOAdapter" scope="prototype">
-		<!-- the next handler in line, see below -->
-		<constructor-arg ref="rmi-sender" />
-		<!-- 
-		<constructor-arg ref="push_notification" />
-		 -->
-		 
+
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.sender.handler.M2MSensorMessage</value>
@@ -39,9 +34,8 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(M2MMessagePOJOReceiverAdapter.class);
 	
-	public M2MMessagePOJOReceiverAdapter(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);	
+	public M2MMessagePOJOReceiverAdapter(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);	
 	}
 
 	@Override

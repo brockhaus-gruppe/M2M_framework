@@ -36,8 +36,8 @@ public class M2MMessageTimeBufferHandler extends AbstractM2MMessageHandler imple
 		// TODO Auto-generated constructor stub
 	}
 
-	public M2MMessageTimeBufferHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MMessageTimeBufferHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 		// TODO Auto-generated constructor stub
 	}
 

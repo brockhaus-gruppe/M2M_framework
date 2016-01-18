@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.dummy;
 
 import org.apache.log4j.Logger;
 
@@ -6,6 +6,7 @@ import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MPlainTextMessage;
+import de.brockhaus.m2m.sender.M2MSendingWorker;
 
 /**
  * This sending worker does nothing but printing the message to the console ...
@@ -14,13 +15,8 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
  * 
 	<!-- sending 2 a dummy -->
 	<bean name="dummy-sender"
-		class="de.brockhaus.m2m.sender.DummySendingWorker" scope="prototype">
+		class="de.brockhaus.m2m.sender.dummy.DummySendingWorker" scope="prototype">
 		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
@@ -47,9 +43,8 @@ public class DummySendingWorker extends AbstractM2MMessageHandler implements M2M
 		//lazy
 	}
 
-	public DummySendingWorker(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public DummySendingWorker(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	public void doSend(M2MMessage  message) {

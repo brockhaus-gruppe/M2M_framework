@@ -13,15 +13,16 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 	
 	<!-- ********************************** handler chain **************************************** -->
-	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder" scope="singleton">
-		<property name="stack">
-			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
-				<ref bean="dummy_sender" />
-				<ref bean="json_converter" />
-				<ref bean="pojo_adapter" />			
-			</list>
-		</property>
-	</bean>
+	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder"
+	scope="singleton">
+	<property name="stack">
+		<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
+			<ref bean="pojo_adapter" />
+			<ref bean="json_converter" />
+			<ref bean="http_sender" />
+		</list>
+	</property>
+</bean>
 	
 
 	<!-- ********************************** handler chain configuration ********************************** -->
@@ -30,8 +31,6 @@
 	</bean>
 
 	<bean name="pojo_adapter" class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter" parent="abstract_handler" scope="singleton">
-		<!-- the next handler in line, see below -->
-		<constructor-arg ref="json_converter" />
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -48,16 +47,7 @@
 	
 	<!-- converting the message to JSON -->
 	<bean name="json_converter"
-		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" parent="abstract_handler" scope="singleton">
-		
-		<!-- doing nothing  
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		-->
-		<!-- the next handler in line, see below --> 
-		<constructor-arg ref="dummy_sender" />
-		
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler" parent="abstract_handler" scope="singleton">	
 		
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -72,12 +62,21 @@
 	
 	<!-- sending 2 a dummy -->
 	<bean name="dummy_sender"
-		class="de.brockhaus.m2m.sender.DummySendingWorker" parent="abstract_handler" scope="singleton">
-		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
+		class="de.brockhaus.m2m.sender.dummy.DummySendingWorker" parent="abstract_handler" scope="singleton">
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type  -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+	</bean>
+	
+		<!-- sending through http -->
+	<bean name="http_sender"
+		class="de.brockhaus.m2m.sender.http.HTTPSendingWorker" scope="singleton">
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -85,15 +84,21 @@
     	</constructor-arg>
     	<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
-	</bean>
+    	
+    	<!-- who deals with the file once content is sent -->
+		<property name="url">
+			<value>http://localhost:8080/sensorData/sensorDataReceiver</value>
+		</property>
+	
+	</bean>	
 	
 	<!-- ********************************** utilities and other ********************************** -->
 
 
 	<!-- *********************************** AOP ************************************************* -->
-	<!-- Performance Logging Aspect 
+	<!-- Performance Logging Aspect  
 	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect" scope="prototype" />
 	
 	<aop:config>
@@ -106,7 +111,7 @@
 				pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
 		</aop:aspect>
 	</aop:config>
-	 -->
+	-->
 	
 	
 </beans>

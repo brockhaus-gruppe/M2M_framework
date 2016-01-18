@@ -109,9 +109,8 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 
 	}
 
-	public FileAdapter(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public FileAdapter(String inTypeClassName,	String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.http;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,8 +15,8 @@ import org.apache.log4j.Logger;
 
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
-import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MPlainTextMessage;
+import de.brockhaus.m2m.sender.M2MSendingWorker;
 
 /**
  * Sending through http, the receiving adapter might be a RESTful service, a servlet ...
@@ -26,20 +26,15 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
  * 
 	<!-- sending through http -->
 	<bean name="http-sender"
-		class="de.brockhaus.m2m.sender.HTTPSendingWorker" scope="singleton">
-		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
+		class="de.brockhaus.m2m.sender.http.HTTPSendingWorker" scope="singleton">
 
 		<!-- the accepted message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.sender.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.sender.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	
     	<!-- who deals with the file once content is sent -->
@@ -67,9 +62,8 @@ public class HTTPSendingWorker extends AbstractM2MMessageHandler implements M2MS
 		super();
 	}
 
-	public HTTPSendingWorker(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public HTTPSendingWorker(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

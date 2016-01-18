@@ -44,6 +44,7 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	/** enforce to skip doChain() */
 	private boolean continueProceeding = true;
 	
+	/** the handler chain which determines the sequence */
 	private static HandlerChainHolder handlerChain;
 	
 	/** Constructor */
@@ -52,9 +53,8 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	}
 	
 	/** Constructor */
-	public AbstractM2MMessageHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
+	public AbstractM2MMessageHandler(String inTypeClassName, String outTypeClassName) {
 		try {
-			this.setNext(next);
 			this.inType = Class.forName(inTypeClassName);
 			this.outType = Class.forName(outTypeClassName);
 		} catch (ClassNotFoundException e) {
@@ -82,15 +82,15 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 		// we will continue if ...
 		if(null != this.getNext() && this.getContinueProceeding()) {
 			this.checkOutMessageType(this.getMessage());
-			this.doChain(this.message);	
+			this.doChain(this.getMessage());	
 		}
 		
 		// stopping
-		else if (this.getContinueProceeding()){
+		else if (! this.getContinueProceeding()){
 			LOG.debug("Waiting to continue");
 		}
 		
-		// termination
+		// termination of chain
 		else if (null == this.next){
 			LOG.debug("End of chain");	
 		}

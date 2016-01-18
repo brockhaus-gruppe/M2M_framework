@@ -27,11 +27,6 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 	<bean name="dataaggregation_handler"
 		class="de.brockhaus.m2m.handler.aggregate.DataAggregationHandler"
 		scope="singleton" >
-		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -68,8 +63,8 @@ public class DataAggregationHandler extends AbstractM2MMessageHandler implements
 		super();
 	}
 
-	public DataAggregationHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public DataAggregationHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override

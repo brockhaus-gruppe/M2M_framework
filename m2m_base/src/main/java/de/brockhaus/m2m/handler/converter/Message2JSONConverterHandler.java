@@ -18,14 +18,6 @@ import de.brockhaus.m2m.util.JSONBuilderParserUtil;
 	<bean name="json_converter"
 		class="de.brockhaus.m2m.sender.converter.Message2JSONConverterHandler" scope="prototype">
 		
-		<!-- doing nothing  
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		-->
-		<!-- the next handler in line, see below --> 
-		<constructor-arg ref="dummy-sender" />
-		
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MMultiMessage</value>
@@ -52,9 +44,8 @@ public class Message2JSONConverterHandler extends AbstractM2MMessageHandler impl
 		super();
 	}
 
-	public Message2JSONConverterHandler(M2MMessageHandler next,
-			String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public Message2JSONConverterHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
