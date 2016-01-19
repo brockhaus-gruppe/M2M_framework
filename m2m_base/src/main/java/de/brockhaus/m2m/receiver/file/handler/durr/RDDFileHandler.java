@@ -45,6 +45,8 @@ public class RDDFileHandler implements FileEventHandler{
 	private FileHandlerCallback callback;
 	private String master;
 	private String appName;
+	private SparkConf conf;
+	private JavaSparkContext sc;
 	private List<String> stringMessage = new ArrayList<String>();
 	private M2MRddMessage rddMessage;
 	private String sensorId;
@@ -93,7 +95,7 @@ public class RDDFileHandler implements FileEventHandler{
 			br.close();
 
 			// invoking callback
-			this.callback.handleEventResult(this.rddMessage);
+			this.callback.handleEventResult(rddMessage);
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -106,12 +108,18 @@ public class RDDFileHandler implements FileEventHandler{
 	}
 
 	private void createMessage(List<String> parts) {
-		SparkConf conf = new SparkConf().setMaster(master).setAppName(appName);
-		JavaSparkContext sc = new JavaSparkContext(conf);
+		
 		JavaRDD<String> rdd = sc.parallelize(parts);
-		this.rddMessage.setRddMessage(rdd);
-		this.rddMessage.setSensorId(sensorId);
-		LOG.trace("Message read : "+this.rddMessage.getRddMessage().count());
+		rddMessage = new M2MRddMessage();
+		rddMessage.setRddMessage(rdd);
+		rddMessage.setSensorId(sensorId);
+		LOG.info("Message read : "+rddMessage.getRddMessage().count());
+		LOG.trace("Message read : "+rddMessage.getRddMessage().count());
+	}
+	
+	public void init(){
+		this.conf = new SparkConf().setMaster(master).setAppName(appName);
+		this.sc = new JavaSparkContext(this.conf);
 	}
 	
 	public void setMaster(String master) {
