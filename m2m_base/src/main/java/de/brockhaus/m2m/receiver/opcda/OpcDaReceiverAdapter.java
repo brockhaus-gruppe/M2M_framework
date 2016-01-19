@@ -16,7 +16,7 @@ import de.brockhaus.m2m.message.M2MMessage;
 public class OpcDaReceiverAdapter extends AbstractM2MMessageHandler {
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// TODO Auto-generated method stub
 		
 	}

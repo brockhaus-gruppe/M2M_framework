@@ -1,6 +1,7 @@
 package de.brockhaus.m2m.sender;
 
 import de.brockhaus.m2m.message.M2MMessage;
+import de.brockhaus.m2m.message.M2MMessageHandler;
 
 
 /**
@@ -12,7 +13,7 @@ import de.brockhaus.m2m.message.M2MMessage;
  * @author mbohnen, Apr 11, 2015
  *
  */
-public interface M2MSendingWorker {
+public interface M2MSendingWorker extends M2MMessageHandler {
 	
 	/** we will send nothing but strings */
 	public void doSend(M2MMessage message);

@@ -18,21 +18,13 @@ import de.brockhaus.m2m.util.JSONBuilderParserUtil;
 	<bean name="json_converter"
 		class="de.brockhaus.m2m.sender.converter.Message2JSONConverterHandler" scope="prototype">
 		
-		<!-- doing nothing  
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		-->
-		<!-- the next handler in line, see below --> 
-		<constructor-arg ref="dummy-sender" />
-		
 		<!-- the accepted message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MMultiMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
     	</constructor-arg>
     	<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	
 	</bean>
@@ -44,7 +36,7 @@ import de.brockhaus.m2m.util.JSONBuilderParserUtil;
  * @author mbohnen, Apr 10, 2015
  *
  */
-public class Message2JSONConverterHandler extends AbstractM2MMessageHandler {
+public class Message2JSONConverterHandler extends AbstractM2MMessageHandler implements M2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(Message2JSONConverterHandler.class);
 
@@ -52,13 +44,12 @@ public class Message2JSONConverterHandler extends AbstractM2MMessageHandler {
 		super();
 	}
 
-	public Message2JSONConverterHandler(M2MMessageHandler next,
-			String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public Message2JSONConverterHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		LOG.trace("Serialization of: " + message.getClass().getSimpleName());
 		String json = JSONBuilderParserUtil.getInstance().toJSON(message);

@@ -31,14 +31,6 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
 		init-method="init" 
 		destroy-method="cleanUp">
 		
-		<!-- the last in line, no following handler 
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		-->
-		<!-- the next handler in line, see below -->
-		<constructor-arg ref="json_converter" />
-		
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
@@ -91,10 +83,8 @@ public class JMSActiveMQReceiverAdapter extends AbstractM2MMessageHandler
 		// TODO Auto-generated constructor stub
 	}
 
-	public JMSActiveMQReceiverAdapter(M2MMessageHandler next,
-			String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
-		// TODO Auto-generated constructor stub
+	public JMSActiveMQReceiverAdapter(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	// invoked on every message ...
@@ -122,7 +112,7 @@ public class JMSActiveMQReceiverAdapter extends AbstractM2MMessageHandler
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// nothing to do here ... all is done within onMessage()
 	}
 

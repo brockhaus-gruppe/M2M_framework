@@ -27,7 +27,7 @@ import de.brockhaus.m2m.util.MQTTUtil.ClientType;
  * @author mbohnen, Jun 5, 2015
  *
  */
-public class MQTTSubscriber extends AbstractM2MMessageHandler {
+public class MQTTSubscriber extends AbstractM2MMessageHandler  {
 	
 	private final static Logger LOG = Logger.getLogger(MQTTSubscriber.class);
 
@@ -37,7 +37,7 @@ public class MQTTSubscriber extends AbstractM2MMessageHandler {
 	private String topic = "sensors/#";
 	
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// TODO Auto-generated method stub	
 	}
 

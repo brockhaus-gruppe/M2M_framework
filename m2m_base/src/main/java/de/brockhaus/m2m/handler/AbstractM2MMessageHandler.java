@@ -33,16 +33,19 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	private M2MMessageHandler next;
 
 	/** the type of message the handler can deal with */
-	private Class inType;
+	private Class<?> inType;
 	
 	/** the type of message the handler will send */
-	private Class outType;
+	private Class<?> outType;
 
 	/** the message we are dealing with */
 	private M2MMessage message;
 	
 	/** enforce to skip doChain() */
-	private boolean continueProceeding;
+	private boolean continueProceeding = true;
+	
+	/** the handler chain which determines the sequence */
+	private static HandlerChainHolder handlerChain;
 	
 	/** Constructor */
 	public AbstractM2MMessageHandler() {
@@ -50,11 +53,10 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	}
 	
 	/** Constructor */
-	public AbstractM2MMessageHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
+	public AbstractM2MMessageHandler(String inTypeClassName, String outTypeClassName) {
 		try {
-			this.setNext(next);
-			this.inType = Class.forName(inTypeClassName);
-			this.outType = Class.forName(outTypeClassName);
+			this.setInType(Class.forName(inTypeClassName));
+			this.setOutType(Class.forName(outTypeClassName));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -72,25 +74,30 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 		// hand over to subclass
 		this.handleMessage(message);
 		
+		M2MMessageHandler follower = this.getHandlerChain().getNextHandler();
+		if(null != follower) {
+			this.setNext(follower);	
+		}
+		
 		// we will continue if ...
 		if(null != this.getNext() && this.getContinueProceeding()) {
 			this.checkOutMessageType(this.getMessage());
-			this.doChain(this.message);	
+			this.doChain(this.getMessage());	
 		}
 		
 		// stopping
-		else if (this.getContinueProceeding()){
+		else if (! this.getContinueProceeding()){
 			LOG.debug("Waiting to continue");
 		}
 		
-		// termination
+		// termination of chain
 		else if (null == this.next){
 			LOG.debug("End of chain");	
 		}
 	}
 
 	/** this needs to be overwritten ... individual handling of message by subclass */
-	protected abstract <T extends M2MMessage> void handleMessage(T message);
+	public abstract <T extends M2MMessage> void handleMessage(T message);
 
 	/** checking 4 correct type */
 	private  <T extends M2MMessage> void checkInMessageType(T message) throws M2MCommunicationException {
@@ -121,7 +128,6 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	 */
 	protected final <T extends M2MMessage> void doChain(T message) throws M2MCommunicationException {
 		LOG.debug("chaining");
-		M2MMessageHandler handler = this.getNext();
 		this.getNext().onMessageEvent(message);
 	}
 
@@ -166,4 +172,12 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	public void setOutType(Class<?> outType) {
 		this.outType = outType;
 	}
+
+	public HandlerChainHolder getHandlerChain() {
+		return handlerChain;
+	}
+
+	public void setHandlerChain(HandlerChainHolder handlerChain) {
+		this.handlerChain = handlerChain;
+	}	
 }

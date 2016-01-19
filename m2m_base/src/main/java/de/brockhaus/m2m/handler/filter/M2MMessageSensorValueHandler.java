@@ -27,7 +27,7 @@ public class M2MMessageSensorValueHandler extends AbstractM2MMessageHandler impl
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		// TODO Auto-generated method stub
 		
 	}

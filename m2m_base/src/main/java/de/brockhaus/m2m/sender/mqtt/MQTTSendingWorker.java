@@ -1,5 +1,6 @@
-package de.brockhaus.m2m.sender;
+package de.brockhaus.m2m.sender.mqtt;
 
+import org.apache.log4j.Logger;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -8,6 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttTopic;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.sender.M2MSendingWorker;
 import de.brockhaus.m2m.util.JSONBuilderParserUtil;
 import de.brockhaus.m2m.util.MQTTUtil;
 import de.brockhaus.m2m.util.MQTTUtil.ClientType;
@@ -25,6 +27,8 @@ import de.brockhaus.m2m.util.MQTTUtil.ClientType;
  *
  */
 public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
+	
+	private static final Logger LOG = Logger.getLogger(MQTTSendingWorker.class);
 
 	private MqttClient client;
 	
@@ -34,9 +38,8 @@ public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MS
 	private MqttTopic topic;
 
 
-	public MQTTSendingWorker(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public MQTTSendingWorker(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public class MQTTSendingWorker extends AbstractM2MMessageHandler implements M2MS
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		this.doSend(message);
 	}
