@@ -9,7 +9,7 @@
 					
 		<!-- the directory to monitor -->
 		<property name="warFileLocation">
-			<value>/home/mbohnen/Desktop/sensorData.war</value>
+			<value>/home/mbohnen/Desktop/M2M/sensorData.war</value>
 		</property>	
 		
 		<!-- the port the web server is listening o-->
