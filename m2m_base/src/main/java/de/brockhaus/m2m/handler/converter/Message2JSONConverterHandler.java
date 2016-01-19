@@ -20,11 +20,11 @@ import de.brockhaus.m2m.util.JSONBuilderParserUtil;
 		
 		<!-- the accepted message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MMultiMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
     	</constructor-arg>
     	<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	
 	</bean>

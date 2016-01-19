@@ -55,8 +55,8 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	/** Constructor */
 	public AbstractM2MMessageHandler(String inTypeClassName, String outTypeClassName) {
 		try {
-			this.inType = Class.forName(inTypeClassName);
-			this.outType = Class.forName(outTypeClassName);
+			this.setInType(Class.forName(inTypeClassName));
+			this.setOutType(Class.forName(outTypeClassName));
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
