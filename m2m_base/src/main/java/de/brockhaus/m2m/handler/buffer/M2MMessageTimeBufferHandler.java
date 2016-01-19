@@ -22,7 +22,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * @author mbohnen, May 18, 2015
  *
  */
-public class M2MMessageTimeBufferHandler extends AbstractM2MMessageHandler implements Runnable {
+public class M2MMessageTimeBufferHandler extends AbstractM2MMessageHandler implements Runnable, M2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(M2MMessageTimeBufferHandler.class);
 
@@ -36,13 +36,13 @@ public class M2MMessageTimeBufferHandler extends AbstractM2MMessageHandler imple
 		// TODO Auto-generated constructor stub
 	}
 
-	public M2MMessageTimeBufferHandler(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MMessageTimeBufferHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {	
+	public <T extends M2MMessage> void handleMessage(T message) {	
 		
 		LOG.debug("adding to bufer");
 		this.buffer.add((M2MSensorMessage) message);

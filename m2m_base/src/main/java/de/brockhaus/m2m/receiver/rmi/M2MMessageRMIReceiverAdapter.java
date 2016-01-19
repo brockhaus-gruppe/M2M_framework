@@ -25,15 +25,6 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 		scope="singleton" 
 		init-method="init" >
 		
-		<!-- the last in line, no following handler  
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		-->
-		
-		<!-- the next handler in line, see below --> 
-		<constructor-arg ref="db_handler" />
-		
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
@@ -79,13 +70,12 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 		super();
 	}
 
-	public M2MMessageRMIReceiverAdapter(M2MMessageHandler next,
-			String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MMessageRMIReceiverAdapter(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		
 		M2MMultiMessage msg = new M2MMultiMessage();

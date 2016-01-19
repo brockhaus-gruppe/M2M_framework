@@ -35,8 +35,8 @@ public class StartM2MBaseChain {
 		StartM2MBaseChain test = new StartM2MBaseChain();
 		test.init();
 
-		test.sendByNumbers(3, 1000);
-//		test.sendForever(10o);
+//		test.sendByNumbers(3, 1000);
+		test.sendForever(200);
 	}
 
 	private static void init() {

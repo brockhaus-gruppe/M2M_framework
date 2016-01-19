@@ -29,11 +29,6 @@ import de.brockhaus.m2m.util.ConfigServerRMIConnector;
 		init-method="init" 
 		destroy-method="cleanUp" 
 		scope="singleton" >
-		
-		<!-- the last in line, no following handler -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
 
 		<!-- the accepted message type -->
 		<constructor-arg>
@@ -110,13 +105,12 @@ public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler imp
 		super();
 	}
 
-	public M2MMessageSensorFilterHandler(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MMessageSensorFilterHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		String id = ((M2MSensorMessage) message).getSensorId();
 		if(sensorIds.contains(id)) {

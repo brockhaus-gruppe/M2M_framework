@@ -18,15 +18,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  	<!-- storing sensor message 2 persistent storage -->
 	<bean name="db-handler"
 		class="de.brockhaus.m2m.handler.database.DatabaseHandler" scope="singleton">
-		
-		<!-- doing nothing  -->
-		<constructor-arg name = "next">
-			<null />
-		</constructor-arg>
-		
-		<!-- the next handler in line, see below  
-		<constructor-arg ref="jms-sender" />
-		-->
+
 		<!-- the accepted message type -->
 		<constructor-arg>
         	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MMultiMessage</value>
@@ -59,7 +51,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * @author mbohnen, Dec 11, 2015
  *
  */
-public class DatabaseHandler extends AbstractM2MMessageHandler {
+public class DatabaseHandler extends AbstractM2MMessageHandler implements M2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(DatabaseHandler.class);
 	
@@ -71,13 +63,12 @@ public class DatabaseHandler extends AbstractM2MMessageHandler {
 		
 	}
 
-	public DatabaseHandler(M2MMessageHandler next, String inTypeClassName,
-			String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public DatabaseHandler(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		if(message instanceof M2MMultiMessage) {
 			this.dao.bulkInsertOfSensorData(((M2MMultiMessage) message).getSensorDataMessageList());

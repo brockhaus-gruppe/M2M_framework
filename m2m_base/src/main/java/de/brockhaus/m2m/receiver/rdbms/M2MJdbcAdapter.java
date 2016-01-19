@@ -14,7 +14,6 @@ import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
-import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.util.M2MJdbcDataSource;
@@ -57,8 +56,8 @@ public class M2MJdbcAdapter extends AbstractM2MMessageHandler implements Runnabl
 		super();
 	}
 
-	public M2MJdbcAdapter(M2MMessageHandler next, String inTypeClassName, String outTypeClassName) {
-		super(next, inTypeClassName, outTypeClassName);
+	public M2MJdbcAdapter(String inTypeClassName, String outTypeClassName) {
+		super(inTypeClassName, outTypeClassName);
 	}
 
 	public void init() {
@@ -70,7 +69,7 @@ public class M2MJdbcAdapter extends AbstractM2MMessageHandler implements Runnabl
 	}
 
 	@Override
-	protected <T extends M2MMessage> void handleMessage(T message) {
+	public <T extends M2MMessage> void handleMessage(T message) {
 		LOG.debug("handling message");
 		try {
 			super.doChain(message);
