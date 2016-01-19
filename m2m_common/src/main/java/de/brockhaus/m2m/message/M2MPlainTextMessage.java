@@ -21,6 +21,5 @@ public class M2MPlainTextMessage extends M2MMessage {
 
 	public void setSensordata(String sensordata) {
 		this.sensordata = sensordata;
-	}
-	
+	}	
 }
