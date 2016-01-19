@@ -61,14 +61,14 @@ public class RDDFileHandler implements FileEventHandler{
 
 	private void readFile() {
 		// getting the partial date out of the path of the file (name of subdirectory)
-		String path = file.getParent();
-		int i = path.lastIndexOf('/');
-		String partialdate = path.substring(i+1);
+		//String path = file.getParent();
+		//int i = path.lastIndexOf('/');
+		//String partialdate = path.substring(i+1);
 
 		// getting the name of sensor out of the filename 
 		// (e.g.: PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv)
 		String filename = file.getName();
-		int j = filename.lastIndexOf('_');
+		int j = filename.lastIndexOf('-');
 		sensorId = filename.substring(0, j);
 
 		try {
