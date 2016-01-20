@@ -62,7 +62,7 @@
 	<!-- ********************************** utilities and other ********************************** -->
 
 	<bean name="file_read_handler"
-		class="de.brockhaus.m2m.receiver.file.handler.durr.RDDFileHandler" init-method="init">
+		class="de.brockhaus.m2m.receiver.file.handler.brueckner.RDDFileHandler" init-method="init">
 		<property name="master">
 			<value>local</value>
 		</property>

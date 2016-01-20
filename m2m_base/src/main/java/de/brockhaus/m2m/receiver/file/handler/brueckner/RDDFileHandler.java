@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.receiver.file.handler.durr;
+package de.brockhaus.m2m.receiver.file.handler.brueckner;
 
 import java.io.BufferedReader;
 import java.io.File;
