@@ -17,6 +17,13 @@
 			<id>Eclipse Paho Repo</id>
 			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
 		</repository>
+
+		<repository>
+			<id>cumulocity</id>
+			<layout>default</layout>
+			<url>http://download.cumulocity.com/maven/repository</url>
+		</repository>
+		
 	</repositories>
 
 	<build>
@@ -220,5 +227,29 @@
 			<version>1.3.176</version>
 		</dependency>
 
+		<!-- cumulocity -->
+		<dependency>
+			<groupId>com.nsn.cumulocity.clients-java</groupId>
+			<artifactId>java-client</artifactId>
+			<version>6.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.nsn.cumulocity.model</groupId>
+			<artifactId>device-capability-model</artifactId>
+			<version>6.4.0</version>
+		</dependency>
+
+		<!-- OPC / Prosys put the files from repo into your local .m2 repository -->
+		<dependency>
+			<groupId>org.opcfoundation.ua</groupId>
+			<artifactId>Opc.Ua.Stack</artifactId>
+			<version>1.02.337.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.prosysopc.ua</groupId>
+			<artifactId>Prosys-OPC-UA-Java-SDK-Client-Server-Evaluation</artifactId>
+			<version>2.2.0-552</version>
+		</dependency>
 	</dependencies>
 </project>
