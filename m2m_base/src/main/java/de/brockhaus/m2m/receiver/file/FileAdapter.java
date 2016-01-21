@@ -21,6 +21,7 @@ import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMultiMessage;
+import de.brockhaus.m2m.message.M2MRddMessage;
 
 /**
  * Monitoring the file system for changes. 
@@ -128,12 +129,16 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 	
 	public void handleEventResult(Object... result) {
 		
-		// it's is presumed we get a M2MMultiMessage
-		if(! (result[0] instanceof M2MMultiMessage)) {
+		// it's is presumed we get a M2MMultiMessage or M2MRddMessage
+		if(! (result[0] instanceof M2MMultiMessage || result[0] instanceof M2MRddMessage)) {
 			throw new RuntimeException("We can't handle this result");
 		}
-			
-		this.handleMessage((M2MMultiMessage) result[0]);
+		else if(result[0] instanceof M2MMultiMessage)	{
+			this.handleMessage((M2MMultiMessage) result[0]);
+		}
+		else if(result[0] instanceof M2MRddMessage) {
+			this.handleMessage((M2MRddMessage) result[0]);
+		}
 		
 	}
 	

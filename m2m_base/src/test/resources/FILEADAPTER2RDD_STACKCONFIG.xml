@@ -15,17 +15,17 @@
 		<!-- the next handler in line, see below <constructor-arg ref="spark_handler" 
 			/> -->
 
-		<!-- doing nothing -->
+		<!-- doing nothing 
 		<constructor-arg name="next">
 			<null />
-		</constructor-arg>
+		</constructor-arg> -->
 
 		<constructor-arg>
 			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
 		</constructor-arg>
 		<!-- the sent message type -->
 		<constructor-arg>
-			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MRddMessage</value>
 		</constructor-arg>
 
 
@@ -33,24 +33,17 @@
 			it -->
 		<property name="fileNamePatterns">
 			<map>
-				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv"
-					value="PT_DS1_316233.ED01_AB219_M04.AS.V2251" />
-				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2252_Setpoint.csv"
-					value="PT_DS1_316233.ED01_AB219_M04.AS.V2252" />
-				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2253_Setpoint.csv"
-					value="PT_DS1_316233.ED01_AB219_M04.AS.V2253" />
-				<entry key="PT_DS1_316233.ED01_AB219_M04.AS.V2254_Setpoint.csv"
-					value="PT_DS1_316233.ED01_AB219_M04.AS.V2254" />
-				<entry key="PT_DS1_316233.ED01_FA011.AA.R2444_BalActValue.csv"
-					value="PT_DS1_316233.ED01_FA011.AA.R2444" />
-				<entry key="PT_DS1_316233.ED01_FA011.AA.R2445_BalActValue.csv"
-					value="PT_DS1_316233.ED01_FA011.AA.R2445" />
+				<entry key="Anlage 1 - Daten (konsolidiert).csv" value="Anlage 1 - Daten (konsolidiert)" />
+				<entry key="Anlage 1 - Daten (roh).csv" value="Anlage 1 - Daten (roh)" />
+				<entry key="Anlage 2 - Daten (roh).csv" value="Anlage 2 - Daten (roh)" />
+				<entry key="Anlage 3 - Daten (konsolidiert).csv" value="Anlage 3 - Daten (konsolidiert)" />
+				<entry key="Anlage 3 - Daten (roh).csv" value="Anlage 3 - Daten (roh)" />
 			</map>
 		</property>
 
 		<!-- the directory to monitor -->
 		<property name="directory">
-			<value>C:/Users/pro/sourcetree/m2m_base/src/test/resources/in2</value>
+			<value>C:/Users/pro/brauckhaus_M2M/M2M_framework/m2m_base/src/test/resources/brueckner/</value>
 		</property>
 
 		<!-- who deals with the file once read -->
@@ -69,7 +62,7 @@
 	<!-- ********************************** utilities and other ********************************** -->
 
 	<bean name="file_read_handler"
-		class="de.brockhaus.m2m.receiver.file.handler.durr.RDDFileHandler">
+		class="de.brockhaus.m2m.receiver.file.handler.brueckner.RDDFileHandler" init-method="init">
 		<property name="master">
 			<value>local</value>
 		</property>

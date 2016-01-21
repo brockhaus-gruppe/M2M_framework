@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.receiver.file.handler.durr;
+package de.brockhaus.m2m.receiver.file.handler.brueckner;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,6 +45,8 @@ public class RDDFileHandler implements FileEventHandler{
 	private FileHandlerCallback callback;
 	private String master;
 	private String appName;
+	private SparkConf conf;
+	private JavaSparkContext sc;
 	private List<String> stringMessage = new ArrayList<String>();
 	private M2MRddMessage rddMessage;
 	private String sensorId;
@@ -61,14 +63,14 @@ public class RDDFileHandler implements FileEventHandler{
 
 	private void readFile() {
 		// getting the partial date out of the path of the file (name of subdirectory)
-		String path = file.getParent();
-		int i = path.lastIndexOf('/');
-		String partialdate = path.substring(i+1);
+		//String path = file.getParent();
+		//int i = path.lastIndexOf('/');
+		//String partialdate = path.substring(i+1);
 
 		// getting the name of sensor out of the filename 
 		// (e.g.: PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv)
 		String filename = file.getName();
-		int j = filename.lastIndexOf('_');
+		int j = filename.lastIndexOf('-');
 		sensorId = filename.substring(0, j);
 
 		try {
@@ -93,7 +95,7 @@ public class RDDFileHandler implements FileEventHandler{
 			br.close();
 
 			// invoking callback
-			this.callback.handleEventResult(this.rddMessage);
+			this.callback.handleEventResult(rddMessage);
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -106,12 +108,18 @@ public class RDDFileHandler implements FileEventHandler{
 	}
 
 	private void createMessage(List<String> parts) {
-		SparkConf conf = new SparkConf().setMaster(master).setAppName(appName);
-		JavaSparkContext sc = new JavaSparkContext(conf);
+		
 		JavaRDD<String> rdd = sc.parallelize(parts);
-		this.rddMessage.setRddMessage(rdd);
-		this.rddMessage.setSensorId(sensorId);
-		LOG.trace("Message read : "+this.rddMessage.getRddMessage().count());
+		rddMessage = new M2MRddMessage();
+		rddMessage.setRddMessage(rdd);
+		rddMessage.setSensorId(sensorId);
+		LOG.info("Message read : "+rddMessage.getRddMessage().count());
+		LOG.trace("Message read : "+rddMessage.getRddMessage().count());
+	}
+	
+	public void init(){
+		this.conf = new SparkConf().setMaster(master).setAppName(appName);
+		this.sc = new JavaSparkContext(this.conf);
 	}
 	
 	public void setMaster(String master) {
