@@ -2,11 +2,13 @@ package de.brockhaus.m2m.receiver.opcua.prosys;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.opcfoundation.ua.builtintypes.DataValue;
+import org.opcfoundation.ua.builtintypes.DateTime;
 import org.opcfoundation.ua.builtintypes.LocalizedText;
 import org.opcfoundation.ua.builtintypes.NodeId;
 import org.opcfoundation.ua.builtintypes.UnsignedInteger;
@@ -27,6 +29,8 @@ import com.prosysopc.ua.client.MonitoredItem;
 import com.prosysopc.ua.client.Subscription;
 import com.prosysopc.ua.client.UaClient;
 
+import de.brockhaus.m2m.message.M2MDataType;
+import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 
 /**
@@ -100,14 +104,15 @@ These are put into the TagArray ...
  *
  */
 public class ProsysHandler implements MonitoredDataItemListener {
+
+	// just a logger
+	public static final Logger LOG = Logger.getLogger(ProsysHandler.class);
 	
+	// the handler for dealing with the messages
 	private M2MMessageOpcUaReceiver handler = new M2MMessageOpcUaReceiver();
 
 	// TODO Spring DI
 	private String serverUri = "opc.tcp://127.0.0.1:49320";
-
-	// just a logger
-	public static final Logger LOG = Logger.getLogger(ProsysHandler.class);
 
 	// create an UaClient object which encapsulates the connection to the OPC UA server
 	private UaClient client;
@@ -133,18 +138,8 @@ public class ProsysHandler implements MonitoredDataItemListener {
 	node attributes list).*/
 	UnsignedInteger attributeId = UnsignedInteger.valueOf(13);
 	
-	// define the corresponding listener that monitors and print value changes on items
-//	private static MonitoredDataItemListener dataChangeListener = new MonitoredDataItemListener() {
-//		@Override
-//		public void onDataChange(MonitoredDataItem sender, DataValue prevValue, DataValue value) {
-//			MonitoredItem i = sender;
-//			println(dataValueToString(i.getNodeId(), i.getAttributeId(), value));
-//		}
-//	};
-	
 	// should some kind of OPC structure be printed?
 	private boolean printStructure;
-	
 	
 	public static void main(String[] args) {
 		new ProsysHandler();
@@ -274,8 +269,18 @@ public class ProsysHandler implements MonitoredDataItemListener {
 		LOG.debug("Change detected");
 		
 		MonitoredItem mItem = item;
-		// TODO create M2MMessage(s)
-		this.handler.handleMessage(null);
+		
+		LOG.debug("\nNodeId: " + mItem.getNodeId().getValue() + "\n" + 
+				"attribute: " + mItem.getAttributeId() + "\n" + 
+				"value: " + newVal.getValue().toString() + "\n");
+		
+		M2MSensorMessage msg = new M2MSensorMessage();
+		msg.setDatatype(M2MDataType.BOOLEAN);
+		msg.setSensorId(mItem.getNodeId().getValue().toString());
+		msg.setValue(newVal.getValue().toString());
+		msg.setTime(new Date(newVal.getServerTimestamp().getTimeInMillis()));
+		
+		this.handler.handleMessage(msg);
 		
 	}
 
