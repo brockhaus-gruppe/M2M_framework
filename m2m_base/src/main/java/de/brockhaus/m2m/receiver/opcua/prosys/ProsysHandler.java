@@ -23,12 +23,10 @@ import com.prosysopc.ua.ServiceException;
 import com.prosysopc.ua.StatusException;
 import com.prosysopc.ua.client.MonitoredDataItem;
 import com.prosysopc.ua.client.MonitoredDataItemListener;
-import com.prosysopc.ua.client.MonitoredItem;
 import com.prosysopc.ua.client.Subscription;
 import com.prosysopc.ua.client.UaClient;
 
-import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
-import de.brockhaus.m2m.message.M2MMessage;
+import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 
 /**
  * 
@@ -40,18 +38,17 @@ import de.brockhaus.m2m.message.M2MMessage;
  * @author mbohnen, Jan 12, 2016
  *
  */
-public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements MonitoredDataItemListener {
-
-	// just a Logger
-	Logger log = Logger.getLogger(this.getClass().getName());
+public class ProsysHandler implements MonitoredDataItemListener {
+	
+	private M2MMessageOpcUaReceiver handler;
 
 	// TODO Spring DI
 	private String serverUri = "opc.tcp://192.168.178.45:49320";
 
-	public static final Logger LOG = Logger.getLogger(OpcUaReceiverAdapter.class);
+	// just a logger
+	public static final Logger LOG = Logger.getLogger(ProsysHandler.class);
 
-	// create an UaClient object which encapsulates the connection to the OPC UA
-	// server
+	// create an UaClient object which encapsulates the connection to the OPC UA server
 	private UaClient client;
 
 	// define a target node Id for the selected node
@@ -84,15 +81,16 @@ public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements M
 //		}
 //	};
 	
+	// should some kind of OPC structure be printed?
 	private boolean printStructure;
 	
 	
 	public static void main(String[] args) {
-		new OpcUaReceiverAdapter();
+		new ProsysHandler();
 	}
 	
 	// constructor
-	public OpcUaReceiverAdapter() {
+	public ProsysHandler() {
 		try {
 			this.init();
 		} catch (URISyntaxException | ServiceResultException | ServiceException | StatusException e) {
@@ -108,7 +106,6 @@ public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements M
 		// define the security level in the OPC UA binary communications
 		client.setSecurityMode(SecurityMode.NONE);
 
-		
 		// create an Application Description which is sent to the server
 		ApplicationDescription appDescription = new ApplicationDescription();
 		appDescription.setApplicationName(new LocalizedText("OpcuaClient", Locale.ENGLISH));
@@ -178,12 +175,11 @@ public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements M
 		nodeId = selectNode(3);
 		references = client.getAddressSpace().browse(nodeId);
 //		browse(nodeId);
-
-		
-
+	
 		for (int i = 0; i < readTags.length; i++)
 			TagsArray.add(i, selectNode(readTags[i]));
 
+		// for all tags we're interested in
 		for (int i = 0; i < TagsArray.size(); i++) {
 			// include a number of monitored items, which you listen to
 			MonitoredDataItem item = new MonitoredDataItem(TagsArray.get(i), attributeId, MonitoringMode.Reporting);
@@ -198,8 +194,7 @@ public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements M
 			item.setDataChangeListener(this);
 		}
 
-
-		log.info("[-- READING VALUES CHANGES FROM THE SERVER NODES --]");
+		LOG.info("[-- READING VALUES CHANGES FROM THE SERVER NODES --]");
 	}
 	
 
@@ -211,14 +206,11 @@ public class OpcUaReceiverAdapter extends AbstractM2MMessageHandler implements M
 	}
 	
 	@Override
-	public <T extends M2MMessage> void handleMessage(T message) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void onDataChange(MonitoredDataItem item, DataValue oldVal, DataValue newVal) {
 		LOG.debug("Change detected");
+		
+		// TODO create M2MMessage(s)
+		this.handler.handleMessage(null);
 		
 	}
 
