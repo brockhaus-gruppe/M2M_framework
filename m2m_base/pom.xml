@@ -23,7 +23,12 @@
 			<layout>default</layout>
 			<url>http://download.cumulocity.com/maven/repository</url>
 		</repository>
-		
+
+		<repository>
+			<id>project.local</id>
+			<name>project</name>
+			<url>file:${basedir}/repo</url>
+		</repository>
 	</repositories>
 
 	<build>

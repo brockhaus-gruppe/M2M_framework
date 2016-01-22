@@ -23,14 +23,75 @@ import com.prosysopc.ua.ServiceException;
 import com.prosysopc.ua.StatusException;
 import com.prosysopc.ua.client.MonitoredDataItem;
 import com.prosysopc.ua.client.MonitoredDataItemListener;
+import com.prosysopc.ua.client.MonitoredItem;
 import com.prosysopc.ua.client.Subscription;
 import com.prosysopc.ua.client.UaClient;
 
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 
 /**
+ * The Prosys proprietary handler to read the data from an OPC Server.
  * 
+ * It might look somehow strange how we used the parameters during configureRead(); but all of this
+ * deals with the hierarchical nodes within OPC. For the current example (Fischertechnik plus S7)
+ * it looks like this:
+ *  
+[-- NODE HIERARCHICAL REFERENCES --]
+0 - Views: FolderType (ReferenceType=Organizes, BrowseName=Views)
+1 - Objects: FolderType (ReferenceType=Organizes, BrowseName=Objects)
+2 - Types: FolderType (ReferenceType=Organizes, BrowseName=Types)
+
+=> we browse for Objects so we picked '1'
+
+0 - Server: ServerType (ReferenceType=Organizes, BrowseName=Server)
+1 - _AdvancedTags: FolderType (ReferenceType=Organizes, BrowseName=2:_AdvancedTags)
+2 - _CustomAlarms: FolderType (ReferenceType=Organizes, BrowseName=2:_CustomAlarms)
+3 - _DataLogger: FolderType (ReferenceType=Organizes, BrowseName=2:_DataLogger)
+4 - _EFMExporter: FolderType (ReferenceType=Organizes, BrowseName=2:_EFMExporter)
+5 - _IDF_for_Splunk: FolderType (ReferenceType=Organizes, BrowseName=2:_IDF_for_Splunk)
+6 - _IoT_Gateway: FolderType (ReferenceType=Organizes, BrowseName=2:_IoT_Gateway)
+7 - _LocalHistorian: FolderType (ReferenceType=Organizes, BrowseName=2:_LocalHistorian)
+8 - _OracleConnector: FolderType (ReferenceType=Organizes, BrowseName=2:_OracleConnector)
+9 - _Redundancy: FolderType (ReferenceType=Organizes, BrowseName=2:_Redundancy)
+10 - _Scheduler: FolderType (ReferenceType=Organizes, BrowseName=2:_Scheduler)
+11 - _SecurityPolicies: FolderType (ReferenceType=Organizes, BrowseName=2:_SecurityPolicies)
+12 - _SNMP Agent: FolderType (ReferenceType=Organizes, BrowseName=2:_SNMP Agent)
+13 - _System: FolderType (ReferenceType=Organizes, BrowseName=2:_System)
+14 - Siemens PLC S7-1200: FolderType (ReferenceType=Organizes, BrowseName=2:Siemens PLC S7-1200)
+
+=> we go for PLC, so we picked '14'
+
+0 - _Statistics: FolderType (ReferenceType=Organizes, BrowseName=2:_Statistics)
+1 - _System: FolderType (ReferenceType=Organizes, BrowseName=2:_System)
+2 - s7-1200: FolderType (ReferenceType=Organizes, BrowseName=2:s7-1200)
+
+=> we go for S7, so we picked '2'
+
+0 - _System: FolderType (ReferenceType=Organizes, BrowseName=2:_System)
+1 - _Statistics: FolderType (ReferenceType=Organizes, BrowseName=2:_Statistics)
+2 - _InternalTags: FolderType (ReferenceType=Organizes, BrowseName=2:_InternalTags)
+3 - Inputs: FolderType (ReferenceType=Organizes, BrowseName=2:Inputs)
+4 - Outputs: FolderType (ReferenceType=Organizes, BrowseName=2:Outputs)
+5 - Tag1: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Tag1)
+
+=> we go for Input so we picked '3'
+
+Later on we picked the relevant info about the tags:
+0 - Phototransistor conveyer belt swap: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor conveyer belt swap)
+1 - Phototransistor drilling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor drilling machine)
+2 - Phototransistor loading station: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor loading station)
+3 - Phototransistor milling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor milling machine)
+4 - Phototransistor slider 1: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor slider 1)
+5 - Push-button slider 1 front: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 1 front)
+6 - Push-button slider 1 rear: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 1 rear)
+7 - Push-button slider 2 front: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 2 front)
+8 - Push-button slider 2 rear: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 2 rear)
+
+These are put into the TagArray ...
+
  *
+ * TODO get the tree-like structure visualized within printStructure()
+ * 
  * Project: m2m-base
  *
  * Copyright (c) by Brockhaus Group www.brockhaus-gruppe.de
@@ -40,10 +101,10 @@ import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
  */
 public class ProsysHandler implements MonitoredDataItemListener {
 	
-	private M2MMessageOpcUaReceiver handler;
+	private M2MMessageOpcUaReceiver handler = new M2MMessageOpcUaReceiver();
 
 	// TODO Spring DI
-	private String serverUri = "opc.tcp://192.168.178.45:49320";
+	private String serverUri = "opc.tcp://127.0.0.1:49320";
 
 	// just a logger
 	public static final Logger LOG = Logger.getLogger(ProsysHandler.class);
@@ -121,7 +182,7 @@ public class ProsysHandler implements MonitoredDataItemListener {
 		appDescription.setApplicationType(ApplicationType.Client);
 
 		// define the client application certificate
-		ApplicationIdentity identity = new ApplicationIdentity();
+		final ApplicationIdentity identity = new ApplicationIdentity();
 		identity.setApplicationDescription(appDescription);
 		
 		// assign the identity to the Client
@@ -132,6 +193,9 @@ public class ProsysHandler implements MonitoredDataItemListener {
 		
 		// receive only the hierarchical references between the nodes
 		client.getAddressSpace().setReferenceTypeId(Identifiers.HierarchicalReferences);
+		
+		// connect to the server
+		client.connect();
 		
 		if(printStructure) {
 			LOG.info(this.printStructure());
@@ -209,6 +273,7 @@ public class ProsysHandler implements MonitoredDataItemListener {
 	public void onDataChange(MonitoredDataItem item, DataValue oldVal, DataValue newVal) {
 		LOG.debug("Change detected");
 		
+		MonitoredItem mItem = item;
 		// TODO create M2MMessage(s)
 		this.handler.handleMessage(null);
 		
