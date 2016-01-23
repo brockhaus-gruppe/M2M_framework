@@ -2,15 +2,20 @@ package de.brockhaus.m2m.message;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * 
- * Project: comcommon
+ *
+ * Project: m2m-common
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, May 16, 2015
+ * @author mbohnen, Jan 23, 2016
  *
  */
 public class M2MSensorMessage extends M2MMessage {
@@ -20,6 +25,7 @@ public class M2MSensorMessage extends M2MMessage {
 	
 	private M2MDataType datatype;
 	
+	// every type will be represented as a string
 	private String value;
 
 	
@@ -60,4 +66,36 @@ public class M2MSensorMessage extends M2MMessage {
 		this.value = value;
 	}
 
+	@Override
+	public int hashCode() {
+		return new HashCodeBuilder()
+				.appendSuper(super.hashCode())
+		        .append(this.getTime())
+		        .append(this.getValue())
+		        .toHashCode();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		
+		if(! (other instanceof M2MSensorMessage)) {
+			return false;
+		}
+		
+	    return new EqualsBuilder()
+	    	         .appendSuper(super.equals(other))
+	    	         .append(this.getTime(), ((M2MSensorMessage) other).getTime())
+	    	         .append(this.getValue(), ((M2MSensorMessage) other).getValue())
+	    	         .isEquals();
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this)
+				.appendSuper(super.toString())
+				.append(this.getTime())
+				.append(this.getValue())
+				.append(this.getDatatype())
+				.toString();
+	}
 }
