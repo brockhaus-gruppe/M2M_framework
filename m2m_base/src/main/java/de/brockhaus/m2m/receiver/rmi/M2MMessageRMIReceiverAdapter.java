@@ -47,12 +47,12 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 			<value>m2m_rmi_receiver</value>
 		</property>
 	</bean>
- * 
- * Project: communication.receiver
+ *
+ * Project: m2m-base
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, Apr 27, 2015
+ * @author mbohnen, Jan 23, 2016
  *
  */
 public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
@@ -61,8 +61,11 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 
 	private M2MMessageRMIReceiver handler;
 	
+	// the port we're listening to
 	private int port;
+	// the host
 	private String host;
+	// stub name
 	private String bindingName;
 	
 	
@@ -79,7 +82,7 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 		LOG.debug("handling message");
 		
 		M2MMultiMessage msg = new M2MMultiMessage();
-		msg.getSensorDataMessageList().add((M2MSensorMessage)message);
+		msg.getSensorDataMessageList().add((M2MSensorMessage) message);
 		super.setMessage(msg);
 	}
 	
@@ -90,8 +93,7 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 			
 			LOG.info("Server up'n'running: " + host + ":" + port);
 			
-		} catch (RemoteException | MalformedURLException
-				| AlreadyBoundException e) {
+		} catch (RemoteException | MalformedURLException | AlreadyBoundException e) {
 			e.printStackTrace();
 		}
 	}
