@@ -33,11 +33,11 @@ import de.brockhaus.m2m.message.M2MPlainTextMessage;
 		
 		<!-- the accepted message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	<!-- the sent message type -->
 		<constructor-arg>
-        	<value type="java.lang.String">de.brockhaus.m2m.handler.M2MPlainTextMessage</value>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
     	</constructor-arg>
     	
     	<!-- who deals with the file once content is sent -->
