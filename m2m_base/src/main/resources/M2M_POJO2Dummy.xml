@@ -17,7 +17,7 @@
 		scope="singleton">
 		<property name="stack">
 			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
-				<ref bean="pojo_adapter" />
+				<ref bean="start" />
 				<ref bean="json_converter" />
 <!-- 				<ref bean="http_sender" /> -->
 				<ref bean="dummy_sender" />
@@ -33,7 +33,7 @@
 		<property name="handlerChain" ref="handler_chain" />
 	</bean>
 
-	<bean name="pojo_adapter"
+	<bean name="start"
 		class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter"
 		parent="abstract_handler" scope="singleton">
 

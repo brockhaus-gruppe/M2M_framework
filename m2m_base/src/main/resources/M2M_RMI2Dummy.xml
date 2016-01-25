@@ -17,7 +17,7 @@
 		scope="singleton">
 		<property name="stack">
 			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
-				<ref bean="rmi_adapter" />
+				<ref bean="start" />
 				<ref bean="json_converter" />
 <!-- 				<ref bean="http_sender" /> -->
 				<ref bean="dummy_sender" />
@@ -34,7 +34,7 @@
 	</bean>
 
 	<!-- RMI based receiving -->
-	<bean name="rmi_adapter"
+	<bean name="start"
 		class="de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiverAdapter" 
 		parent = "abstract_handler"
 		scope="singleton" 
