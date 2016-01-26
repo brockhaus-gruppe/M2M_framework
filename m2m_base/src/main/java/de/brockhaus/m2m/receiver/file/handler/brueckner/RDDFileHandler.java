@@ -68,7 +68,7 @@ public class RDDFileHandler implements FileEventHandler{
 		//String partialdate = path.substring(i+1);
 
 		// getting the name of sensor out of the filename 
-		// (e.g.: PT_DS1_316233.ED01_AB219_M04.AS.V2251_Setpoint.csv)
+		// (e.g.: Anlage 1 - Daten (konsolidiert).csv)
 		String filename = file.getName();
 		int j = filename.lastIndexOf('-');
 		sensorId = filename.substring(0, j);
@@ -94,9 +94,6 @@ public class RDDFileHandler implements FileEventHandler{
 			this.createMessage(stringMessage);
 			br.close();
 
-			// invoking callback
-			this.callback.handleEventResult(rddMessage);
-
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,8 +110,8 @@ public class RDDFileHandler implements FileEventHandler{
 		rddMessage = new M2MRddMessage();
 		rddMessage.setRddMessage(rdd);
 		rddMessage.setSensorId(sensorId);
-		LOG.info("Message read : "+rddMessage.getRddMessage().count());
-		LOG.trace("Message read : "+rddMessage.getRddMessage().count());
+		LOG.info("the number of loaded Elements : "+rddMessage.getRddMessage().count());
+		LOG.trace("the number of loaded Elements : "+rddMessage.getRddMessage().count());
 	}
 	
 	public void init(){
