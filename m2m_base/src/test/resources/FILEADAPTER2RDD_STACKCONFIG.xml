@@ -5,23 +5,32 @@
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
 	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+	
+	<!-- ********************************** handler chain ************************************************ -->
+	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder"
+		scope="singleton">
+		<property name="stack">
+			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
+				<ref bean="file_adapter" />
+				<ref bean="dummy_sender" />
+			</list>
+		</property>
+	</bean>
 
 	<!-- ********************************** handler chain configuration ********************************** -->
-
+	<bean id="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler"
+		abstract="true" scope="singleton">
+		<property name="continueProceeding" value="true" />
+		<property name="handlerChain" ref="handler_chain" />
+	</bean>
 	<!-- the adapter where everything starts -->
 	<bean name="file_adapter" class="de.brockhaus.m2m.receiver.file.FileAdapter"
+		parent = "abstract_handler"
 		init-method="init">
 
-		<!-- the next handler in line, see below <constructor-arg ref="spark_handler" 
-			/> -->
-
-		<!-- doing nothing 
-		<constructor-arg name="next">
-			<null />
-		</constructor-arg> -->
-
+		
 		<constructor-arg>
-			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
 		</constructor-arg>
 		<!-- the sent message type -->
 		<constructor-arg>
@@ -43,7 +52,7 @@
 
 		<!-- the directory to monitor -->
 		<property name="directory">
-			<value>C:/Users/pro/brauckhaus_M2M/M2M_framework/m2m_base/src/test/resources/brueckner/</value>
+			<value>C:/Users/pro/Desktop/brockhaus/git_repo/M2M_framework/m2m_base/src/test/resources/brueckner/</value>
 		</property>
 
 		<!-- who deals with the file once read -->
@@ -56,7 +65,19 @@
 
 	</bean>
 
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender" class="de.brockhaus.m2m.sender.dummy.DummySendingWorker"
+		parent="abstract_handler" scope="singleton">
 
+		<!-- the accepted message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MRddMessage</value>
+		</constructor-arg>
+	 	<!-- the sent message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+		</constructor-arg>
+	</bean>
 
 
 	<!-- ********************************** utilities and other ********************************** -->

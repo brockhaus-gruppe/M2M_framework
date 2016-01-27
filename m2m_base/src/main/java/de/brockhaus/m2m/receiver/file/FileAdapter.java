@@ -129,16 +129,12 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 	
 	public void handleEventResult(Object... result) {
 		
-		// it's is presumed we get a M2MMultiMessage or M2MRddMessage
-		if(! (result[0] instanceof M2MMultiMessage || result[0] instanceof M2MRddMessage)) {
+		// it's is presumed we get a M2MMultiMessage
+		if(! (result[0] instanceof M2MMultiMessage)) {
 			throw new RuntimeException("We can't handle this result");
 		}
-		else if(result[0] instanceof M2MMultiMessage)	{
-			this.handleMessage((M2MMultiMessage) result[0]);
-		}
-		else if(result[0] instanceof M2MRddMessage) {
-			this.handleMessage((M2MRddMessage) result[0]);
-		}
+
+		this.handleMessage((M2MMultiMessage) result[0]);
 		
 	}
 	
