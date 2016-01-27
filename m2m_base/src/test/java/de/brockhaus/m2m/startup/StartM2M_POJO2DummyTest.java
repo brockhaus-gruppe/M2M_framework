@@ -23,13 +23,14 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  */
 public class StartM2M_POJO2DummyTest {
 	
-	private StartM2M_POJO2Dummy chain = new StartM2M_POJO2Dummy();
+	private static StartM2MChain chain;
 
 	private M2MMessageHandler adapter;
 	
 	private static List<String> sensors = new ArrayList<String>();
 	
 	public static void main(String[] args) throws M2MCommunicationException {
+		chain = new StartM2MChain("M2M_POJO2Dummy.xml");
 		StartM2M_POJO2DummyTest test = new StartM2M_POJO2DummyTest();
 		test.init();
 		test.sendByNumbers(3, 1000);

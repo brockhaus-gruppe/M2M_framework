@@ -10,12 +10,12 @@ import de.brockhaus.m2m.message.M2MMessage;
 
 /**
  * The Implementation with respect to UnicastRemoteObject and the interface ...
- * 
- * Project: communication.receiver
+ *
+ * Project: m2m-base
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, Apr 27, 2015
+ * @author mbohnen, Jan 24, 2016
  *
  */
 public class M2MMessageRMIReceiverImpl extends UnicastRemoteObject implements M2MMessageRMIReceiver {

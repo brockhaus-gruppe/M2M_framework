@@ -58,8 +58,6 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 	
 	private static final Logger LOG = Logger.getLogger(M2MMessageRMIReceiverAdapter.class);
-
-	private M2MMessageRMIReceiver handler;
 	
 	// the port we're listening to
 	private int port;
@@ -91,7 +89,7 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 			LocateRegistry.createRegistry(port);
 			Naming.bind("rmi://" + host + ":" + port +"/" + bindingName, new M2MMessageRMIReceiverImpl(this));
 			
-			LOG.info("Server up'n'running: " + host + ":" + port);
+			LOG.info("Server up'n'running, access through: rmi://" + host + ":" + port + "/" + bindingName);
 			
 		} catch (RemoteException | MalformedURLException | AlreadyBoundException e) {
 			e.printStackTrace();

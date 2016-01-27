@@ -19,7 +19,7 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
  */
 public class StartM2MChain {
 
-	private static String configFile = "M2M_RMI2Dummy.xml";
+	private static String configFile = "M2M_OPCUA2Dummy.xml";
 
 	private static M2MMessageHandler adapter;
 
