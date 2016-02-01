@@ -108,8 +108,6 @@
 	<!-- ********************************** utilities and other ********************************** -->
 	<bean name="prosys_handler" class="de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler"
 		scope="singleton">
-		
-				
 		<!-- OPC server uri -->
 		<property name="serverUri">
 			<value>opc.tcp://127.0.0.1:49320</value>
@@ -119,9 +117,6 @@
 		<property name="readTags">
 			<value>0, 1, 2, 3, 4, 5, 6, 7, 8</value>
 		</property>		
-		
-		
-		
 	</bean>
 
 	<!-- *********************************** AOP ************************************************* -->
