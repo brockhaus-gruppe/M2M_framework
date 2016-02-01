@@ -13,7 +13,7 @@ import com.prosysopc.ua.client.MonitoredDataItem;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 
 /**
- * Simulating OPC data
+ * Simulating OPC data which will be send to the ProsysHandler.
  *
  * Project: m2m-base
  *
@@ -26,7 +26,7 @@ public class OPCProsysSimServer {
 
 	private static OPCUAProsysHandler handler;
 	
-	private long interval = 200;
+	private long interval = 2000;
 	
 	public OPCProsysSimServer(OPCUAProsysHandler handler) {
 		this.handler = handler;

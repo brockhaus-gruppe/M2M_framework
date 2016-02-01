@@ -36,6 +36,19 @@ import de.brockhaus.m2m.receiver.opcua.OPCUAHandler;
 /**
  * The Prosys proprietary handler to read the data from an OPC Server.
  * 
+	<bean name="prosys_handler" class="de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler"
+		scope="singleton">
+		<!-- OPC server uri -->
+		<property name="serverUri">
+			<value>opc.tcp://127.0.0.1:49320</value>
+		</property>
+
+		<!-- the tags we're dealing with -->
+		<property name="readTags">
+			<value>0, 1, 2, 3, 4, 5, 6, 7, 8</value>
+		</property>		
+	</bean>
+ * 
  * It might look somehow strange how we used the parameters during
  * configureRead(); but all of this deals with the hierarchical nodes within
  * OPC. For the current example (Fischertechnik plus S7) it looks like this:

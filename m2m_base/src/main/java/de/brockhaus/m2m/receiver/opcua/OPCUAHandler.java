@@ -1,7 +1,7 @@
 package de.brockhaus.m2m.receiver.opcua;
 
 /**
- * 
+ * The common interface for all OPC/UA related handlers
  *
  * Project: m2m-base
  *

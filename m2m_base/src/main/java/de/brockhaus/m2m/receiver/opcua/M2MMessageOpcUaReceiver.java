@@ -8,6 +8,27 @@ import de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler;
 
 /**
  * 
+	<!-- OPCUA based receiving -->
+	<bean name="start"
+		class="de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver" 
+		parent = "abstract_handler"
+		scope="singleton" >
+		
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<constructor-arg ref="prosys_handler" />
+    	<constructor-arg>
+        	<value type="java.lang.Boolean">true</value>
+    	</constructor-arg>
+    	
+    	<property name="handler" ref="prosys_handler" />
+	</bean>
  *
  * Project: m2m-base
  *
@@ -85,6 +106,4 @@ public class M2MMessageOpcUaReceiver extends AbstractM2MMessageHandler {
 	public void setCurrentProvider(OPCHandlerProvider currentProvider) {
 		this.currentProvider = currentProvider;
 	}
-	
-	
 }
