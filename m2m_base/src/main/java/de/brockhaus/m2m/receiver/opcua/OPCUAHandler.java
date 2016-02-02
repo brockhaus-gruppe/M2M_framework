@@ -12,5 +12,5 @@ package de.brockhaus.m2m.receiver.opcua;
  */
 public interface OPCUAHandler {
 	void setReceiver(M2MMessageOpcUaReceiver receiver);
-	void startSimulation();
+	void start();
 }
