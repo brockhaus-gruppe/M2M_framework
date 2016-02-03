@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
-import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 
@@ -55,7 +55,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * @author mbohnen, Jan 23, 2016
  *
  */
-public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
+public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler implements M2MMessageReceiverLifecycle {
 	
 	private static final Logger LOG = Logger.getLogger(M2MMessageRMIReceiverAdapter.class);
 	
@@ -84,7 +84,7 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 		super.setMessage(msg);
 	}
 	
-	public void init() { 
+	public void start() { 
 		try {
 			LocateRegistry.createRegistry(port);
 			Naming.bind("rmi://" + host + ":" + port +"/" + bindingName, new M2MMessageRMIReceiverImpl(this));
@@ -118,5 +118,11 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler {
 
 	public void setBindingName(String bindingName) {
 		this.bindingName = bindingName;
+	}
+
+	@Override
+	public void stop() {
+		System.exit(0);
+		
 	}
 }
