@@ -94,12 +94,13 @@ public class IOMFileHandler implements FileEventHandler {
 			// invoking callback
 			this.callback.handleEventResult(this.multiMsg);
 			
+			// flushing old data
+			this.multiMsg.getSensorDataMessageList().clear();
+			
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e);
 		}
 	}
 

@@ -20,6 +20,7 @@ import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MRddMessage;
 
@@ -78,15 +79,15 @@ import de.brockhaus.m2m.message.M2MRddMessage;
 		</property>
 		
 	</bean>
- *  
- * Project: communication.sender
  *
- * Copyright (c) by Brockhaus Group www.brockhaus-gruppe.de
- * 
- * @author mbohnen, Apr 12, 2015
+ * Project: m2m-base
+ *
+ * Copyright (c) by Brockhaus Group
+ * www.brockhaus-gruppe.de
+ * @author mbohnen, Feb 3, 2016
  *
  */
-public class FileAdapter extends AbstractM2MMessageHandler implements FileHandlerCallback {
+public class FileAdapter extends AbstractM2MMessageHandler implements FileHandlerCallback, M2MMessageReceiverLifecycle {
 
 	private static final Logger LOG = Logger.getLogger(FileAdapter.class);
 	
@@ -105,6 +106,8 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 
 	private WatchService watchService;
 
+	private WatchKey watchKey;
+
 	public FileAdapter() {
 		super();
 
@@ -116,15 +119,12 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 
 	@Override
 	public <T extends M2MMessage> void handleMessage(T message) {
-		
 		LOG.debug("handling message");
 		try {
 			super.doChain(message);
 		} catch (M2MCommunicationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.error(e);
 		}
-		// lazy
 	}
 	
 	public void handleEventResult(Object... result) {
@@ -133,90 +133,85 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 		if(! (result[0] instanceof M2MMultiMessage)) {
 			throw new RuntimeException("We can't handle this result");
 		}
-
 		this.handleMessage((M2MMultiMessage) result[0]);
-		
 	}
 	
 	private void init() {
-		LOG.debug("initializing");
-
 		try {
 			watchService = FileSystems.getDefault().newWatchService();
 
 			File watchDirFile = new File(this.directory);
 			Path watchDirPath = watchDirFile.toPath();
-			
+
 			// recursively registering all sub-directories (some magic) as
 			// described here: http://codingjunkie.net/eventbus-watchservice/
 			Files.walkFileTree(watchDirPath, new WatchServiceRegisteringVisitor());
 
-			LOG.info("\n"
+			LOG.info("\n" 
 					+ "******************************************************************************************"
-					+ "\n"
-					+ this.getClass().getSimpleName()
-					+ " up'n'running"
-					+ " for: "
-					+ this.directory
-					+ "\n"
+					+ "\n" + this.getClass().getSimpleName() + " up'n'running" + " for: " + this.directory + "\n"
 					+ "******************************************************************************************");
 
-			// registering the path for some events
-			// use this WITHOUT sub-dirs and without inner class
-			// WatchKey watchKey = watchDirPath.register(watchService,	StandardWatchEventKinds.ENTRY_CREATE);
-			// watch this if you want to scan sub-directories
-			WatchKey watchKey = watchService.poll();
-			
-			// waiting for the things to happen ...
+		} catch (IOException e) {
+			LOG.error(e);
+		}
+	}
+	
+	public void start() {
+		
+		// registering the path for some events
+		// use this WITHOUT sub-dirs and without inner class
+		// WatchKey watchKey = watchDirPath.register(watchService,
+		// StandardWatchEventKinds.ENTRY_CREATE);
+		// watch this if you want to scan sub-directories
+		watchKey = watchService.poll();
+
+		// waiting for the things to happen ...
+		try {
 			watchKey = watchService.take();
-			
-			
-
-			// looping 'til eternity
-			while (true) {
-				for (WatchEvent<?> event : watchKey.pollEvents()) {
-					LOG.debug("\n Event: "	+ event.kind() + " \n "	+ "File: "	+ event.context());
-					
-					// getting the needful information
-					Path dir = (Path) watchKey.watchable();
-					Path fullPath = dir.resolve(event.context().toString());
-					fullFileName = fullPath.toString();
-					fileName = event.context().toString();
-
-					// go for it
-					this.onNewFile(fileName);
-				}
-			}
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		while(true) {
+			for (WatchEvent<?> event : watchKey.pollEvents()) {
+				LOG.debug("\n Event: " + event.kind() + " \n " + "File: " + event.context());
+
+				// getting the needful information
+				Path dir = (Path) watchKey.watchable();
+				Path fullPath = dir.resolve(event.context().toString());
+				fullFileName = fullPath.toString();
+				fileName = event.context().toString();
+
+				// go for it
+				this.onNewFile(fileName);
+			}
 		}
 	}
 	
 	/**
 	 * triggered once the file shows up
+	 * 
 	 * @param fileName
-	 * @throws MMSCommunicationException 
+	 * @throws MMSCommunicationException
 	 */
-	private void onNewFile(String fileName)
-	{	
-		try
-        {
+	private void onNewFile(String fileName) {
+		try {
 			// are we interested in the file ?
-			if(! this.fileNamePatterns.keySet().contains(fileName)) {
+			if (!this.fileNamePatterns.keySet().contains(fileName)) {
 				LOG.info(fileName + " not of interest");
 				return;
 			}
-			
+
 			LOG.info("reading: " + fileName);
-			
-			//delegate to handler
-	        this.fileReadHandler.handleFile(new File(this.fullFileName), FileEvent.FILE_READ, this);
-	    
-        }
-        catch (Exception e)
-        {
-	        e.printStackTrace();
-        }
+
+			// delegate to handler
+			this.fileReadHandler.handleFile(new File(this.fullFileName), FileEvent.FILE_READ, this);
+
+		} catch (Exception e) {
+			LOG.error(e);
+		}
 	}
 
 	/**
@@ -280,4 +275,9 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
             return FileVisitResult.CONTINUE;
         }
     }
+
+	@Override
+	public void stop() {
+		System.exit(0);	
+	}
 }
