@@ -12,6 +12,11 @@
 		<priority value="DEBUG" />
 		<appender-ref ref="MyAppender" />
 	</category>
+	
+	<category name="de.brockhaus.m2m.handler" additivity="false">
+		<priority value="TRACE" />
+		<appender-ref ref="MyAppender" />
+	</category>
 
 	<root>
 		<priority value="ERROR" />
