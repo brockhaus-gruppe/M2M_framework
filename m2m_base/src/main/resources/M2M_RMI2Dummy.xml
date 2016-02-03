@@ -13,7 +13,9 @@
 	<aop:aspectj-autoproxy proxy-target-class="true" />
 
 	<!-- ********************************** handler chain ************************************************ -->
-	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder"
+	<bean id="handler_chain" 
+		class="de.brockhaus.m2m.handler.HandlerChainHolder"
+		init-method="init"
 		scope="singleton">
 		<property name="stack">
 			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
@@ -38,7 +40,7 @@
 		class="de.brockhaus.m2m.receiver.rmi.M2MMessageRMIReceiverAdapter" 
 		parent = "abstract_handler"
 		scope="singleton" 
-		init-method="init" >
+	 >
 		
 		<!-- the accepted message type -->
 		<constructor-arg>
