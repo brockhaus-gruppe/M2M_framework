@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
 
 /**
  * The generic starter
@@ -19,9 +20,9 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
  */
 public class StartM2MChain {
 
-	private static String configFile = "M2M_OPCUA2Dummy.xml";
+	private static String configFile = "M2M_File2Dummy.xml";
 
-	private static M2MMessageHandler adapter;
+	private static M2MMessageReceiverLifecycle adapter;
 
 	public static void main(String[] args) {
 		if (Arrays.asList(args).size() > 0) {
@@ -35,16 +36,17 @@ public class StartM2MChain {
 	}
 	
 	public StartM2MChain(String chainConfig) {
-		configFile = chainConfig;
+		this.configFile = chainConfig;
 		StartM2MChain.init();
 	}
 
 	private static void init() {
 		ApplicationContext context = new ClassPathXmlApplicationContext(StartM2MChain.configFile);
-		adapter = (M2MMessageHandler) context.getBean("start");
+		adapter = (M2MMessageReceiverLifecycle) context.getBean("start");
+		adapter.start();
 	}
 
 	public static M2MMessageHandler getAdapter() {
-		return adapter;
+		return (M2MMessageHandler) adapter;
 	}
 }
