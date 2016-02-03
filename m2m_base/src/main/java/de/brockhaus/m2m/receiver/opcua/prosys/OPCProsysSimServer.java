@@ -24,7 +24,7 @@ import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
  */
 public class OPCProsysSimServer {
 
-	private static OPCUAProsysHandler handler;
+	private OPCUAProsysHandler handler;
 	
 	private long interval = 2000;
 	

@@ -28,6 +28,7 @@ import com.prosysopc.ua.client.MonitoredItem;
 import com.prosysopc.ua.client.Subscription;
 import com.prosysopc.ua.client.UaClient;
 
+import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
@@ -294,7 +295,11 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		//TODO mapping of OPCDataTypes
 		msg.setDatatype(M2MDataType.BOOLEAN);
 
-		this.receiver.handleMessage(msg);
+		try {
+			this.receiver.onMessageEvent(msg);
+		} catch (M2MCommunicationException e) {
+			LOG.error(e);
+		}
 	}
 	
 	@Override
@@ -309,8 +314,7 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 			try {
 				new OPCProsysSimServer(this).sendMessages();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error(e);
 			}	
 		}
 	}

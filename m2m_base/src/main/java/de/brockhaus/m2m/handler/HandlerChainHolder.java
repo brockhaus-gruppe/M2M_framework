@@ -22,9 +22,9 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
 public class HandlerChainHolder {
 	
 	private static final Logger LOG = Logger.getLogger(HandlerChainHolder.class);
-	private static final HandlerChainHolder THIS = new HandlerChainHolder();
 	
 	private List<M2MMessageHandler> stack = new ArrayList<M2MMessageHandler>();
+	
 	private int stackPos = 0;
 	
 	// the initial value
@@ -34,11 +34,7 @@ public class HandlerChainHolder {
 	
 	
 	public HandlerChainHolder() {
-		
-	}
-	
-	public static HandlerChainHolder getInstance() {
-		return THIS;
+
 	}
 	
 	public void addHandler(M2MMessageHandler handler) {
@@ -72,6 +68,22 @@ public class HandlerChainHolder {
 		
 		return next;
 	}
+	
+	private void init() {
+		StringBuffer buf = new StringBuffer();
+		for (M2MMessageHandler m2mMessageHandler : stack) {
+			buf.append(" -> ");
+			buf.append(m2mMessageHandler.getClass().getSimpleName());
+			
+			
+		}
+		LOG.debug("Stack is composed of: " + stack.size() + " elements: " + buf.toString());
+	}
+	
+	public void reset() {
+		this.cursor = 0;
+		this.gotAll = false;
+	}
 
 	public List<M2MMessageHandler> getStack() {
 		return stack;
@@ -80,6 +92,4 @@ public class HandlerChainHolder {
 	public void setStack(List<M2MMessageHandler> stack) {
 		this.stack = stack;
 	}
-	
-	
 }
