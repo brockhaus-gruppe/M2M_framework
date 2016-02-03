@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- Enable AspectJ style of Spring AOP -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- ********************************** handler chain ************************************************ -->
+	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder"
+		scope="singleton">
+		<property name="stack">
+			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
+				<ref bean="start" />
+<!-- 				<ref bean="json_converter" />
+				<ref bean="http_sender" />   -->
+				<ref bean="dummy_sender" />
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- ********************************** handler configuration ********************************** -->
+	<bean id="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler"
+		abstract="true" scope="singleton">
+		<property name="continueProceeding" value="true" />
+		<property name="handlerChain" ref="handler_chain" />
+	</bean>
+
+	<bean name="start"
+		class="de.brockhaus.m2m.receiver.file.handler.brueckner.Message2RddHadler"
+		parent="abstract_handler" init-method="init" scope="singleton">
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+		</constructor-arg>
+		<!-- the sent message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MRddMessage</value>
+		</constructor-arg>
+		<property name="master">
+			<value>local</value>
+		</property>
+		<property name="appName">
+			<value>application rdd</value>
+		</property>
+	</bean>
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender" class="de.brockhaus.m2m.sender.dummy.DummySendingWorker"
+		parent="abstract_handler" scope="singleton">
+
+		<!-- the accepted message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MRddMessage</value>
+		</constructor-arg>
+	 	<!-- the sent message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+		</constructor-arg>
+	</bean>
+
+	
+
+	<!-- ********************************** utilities and other ********************************** -->
+
+
+	<!-- *********************************** AOP ************************************************* -->
+	<!-- Performance Logging Aspect 
+	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect"
+		scope="prototype" />
+	<aop:config>
+		<aop:aspect id="aspectLogging" ref="logAspect">
+			<aop:pointcut id="pointCutAroundM2MMessagePOJOReceiverAdapter"
+				expression="execution( 
+		* de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.handleMessage(..)) 
+		|| execution( * de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler.handleMessage(..))" />
+			<aop:around method="logAroundExecutionTime"
+				pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
+		</aop:aspect>
+	</aop:config>
+	-->
+
+</beans>
