@@ -166,17 +166,9 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 	public OPCUAProsysHandler(M2MMessageOpcUaReceiver receiver) {
 		
 		this.receiver = receiver;
-		
-		if (!receiver.isSimMode()) {
-			try {
-				this.init();
-			} catch (URISyntaxException | ServiceResultException | ServiceException | StatusException e) {
-				LOG.error(e);
-			}
-		} 
 	}
 
-	private void init() throws URISyntaxException, ServiceResultException, ServiceException, StatusException {
+	private void initOPCReading() throws URISyntaxException, ServiceResultException, ServiceException, StatusException {
 
 		// initiate the connection to the server
 		client = new UaClient(this.serverUri);
@@ -306,12 +298,20 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 	}
 	
 	@Override
-	public void startSimulation() {
-		try {
-			new OPCProsysSimServer(this).sendMessages();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void start() {
+		if (!receiver.isSimMode()) {
+			try {
+				this.initOPCReading();
+			} catch (URISyntaxException | ServiceResultException | ServiceException | StatusException e) {
+				LOG.error(e);
+			}
+		} else {
+			try {
+				new OPCProsysSimServer(this).sendMessages();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
 		}
 	}
 

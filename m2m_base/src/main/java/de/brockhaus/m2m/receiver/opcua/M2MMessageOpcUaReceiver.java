@@ -62,15 +62,16 @@ public class M2MMessageOpcUaReceiver extends AbstractM2MMessageHandler {
 			case PROSYS: handler = (OPCUAProsysHandler) handler; break;
 		}
 		
-		handler.setReceiver(this);
 		this.simMode = simMode;
+		handler.setReceiver(this);
 		
 		LOG.debug("Simulation Mode: " + this.simMode);
 		if (simMode != true) {
+			handler.start();
 			// keep the things rolling (and wait for messages)
 			while (true);
 		} else {
-			handler.startSimulation();
+			handler.start();
 		}
 	}
 	
