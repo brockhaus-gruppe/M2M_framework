@@ -1,5 +1,7 @@
 package de.brockhaus.m2m.handler;
 
+import java.text.MessageFormat;
+
 import org.apache.log4j.Logger;
 
 import de.brockhaus.m2m.message.M2MCommunicationException;
@@ -45,7 +47,7 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	private boolean continueProceeding = true;
 	
 	/** the handler chain which determines the sequence */
-	private static HandlerChainHolder handlerChain;
+	private HandlerChainHolder handlerChain;
 	
 	/** Constructor */
 	public AbstractM2MMessageHandler() {
@@ -67,13 +69,15 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	 */	
 	public final <T extends M2MMessage> void onMessageEvent(T message) throws M2MCommunicationException {
 		// can we deal with incoming message?
-		this.checkInMessageType(message);
+		this.checkInMessageType(message);	
 		
+		//setting the message to the instance
 		this.setMessage(message);
 		
 		// hand over to subclass
 		this.handleMessage(message);
 		
+		// setting the follower within the chain
 		M2MMessageHandler follower = this.getHandlerChain().getNextHandler();
 		if(null != follower) {
 			this.setNext(follower);	
@@ -92,32 +96,36 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 		
 		// termination of chain
 		else if (null == this.next){
-			LOG.debug("End of chain");	
+			LOG.debug("End of chain");
 		}
 	}
 
 	/** this needs to be overwritten ... individual handling of message by subclass */
 	public abstract <T extends M2MMessage> void handleMessage(T message);
 
-	/** checking 4 correct type */
+	/** checking 4 correct inbound message type */
 	private  <T extends M2MMessage> void checkInMessageType(T message) throws M2MCommunicationException {
-		LOG.trace("checking incoming messagetype");
-		
+		LOG.trace("checking incoming messagetype: " + message.getClass().getSimpleName());
+
 		// it is important to make use of getters instead of direct access to field as otherwise
 		// CGLIB proxies used in AOP will provide null values for the fields
 		if(! this.getInType().isInstance(message)) {
-			throw new M2MCommunicationException("MessageType can't be handeled by adapter: " + this.getInType());
+			Object[] data = {this.getClass().getSimpleName(), message.getClass().getSimpleName(), this.getInType().getSimpleName()};
+			MessageFormat form = new MessageFormat("{0} -> inbound MessageType: {1} can not be handeled by adapter, should be: {2},  check config");
+			throw new M2MCommunicationException(form.format(data));
 		}
 	}
 	
-	/** checking 4 correct type */
+	/** checking 4 correct outbound messagetype */
 	private <T extends M2MMessage> void checkOutMessageType(T message) throws M2MCommunicationException {
-		LOG.trace("checking outgoing messagetype");
+		LOG.trace("checking outgoing messagetype: "  + message.getClass().getSimpleName());
 		
 		// it is important to make use of getters instead of direct access to field as otherwise
 		// CGLIB proxies used in AOP will provide null values for the fields
 		if(! this.getOutType().isInstance(message)) {
-			throw new M2MCommunicationException("MessageType can't be handeled by adapter: " + this.getOutType());
+			Object[] data = {this.getClass().getSimpleName(), message.getClass().getSimpleName(), this.getOutType().getSimpleName()};
+			MessageFormat form = new MessageFormat("{0}-> outbound MessageType: {1} can not be handeled by adapter, should be: {2}, check config");
+			throw new M2MCommunicationException(form.format(data));
 		}
 	}
 	
@@ -134,6 +142,10 @@ public abstract class AbstractM2MMessageHandler implements M2MMessageHandler {
 	
 	// getter / setter enforced by Spring DI, all must be public
 	public final M2MMessageHandler getNext() {
+		// might happen if doChain is invoked without previous onMessageEvent
+		if(null == next) {
+			next = this.handlerChain.getNextHandler();
+		}
 		return next;
 	}
 
