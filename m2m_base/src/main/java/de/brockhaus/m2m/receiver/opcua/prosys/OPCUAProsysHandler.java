@@ -290,7 +290,8 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		M2MSensorMessage msg = new M2MSensorMessage();
 		msg.setSensorId(mItem.getNodeId().getValue().toString());
 		msg.setValue(newVal.getValue().toString());
-		msg.setTime(new Date(newVal.getServerTimestamp().getTimeInMillis()));
+		//TODO get time from server
+		msg.setTime(new Date(System.currentTimeMillis()));
 		
 		//TODO mapping of OPCDataTypes
 		msg.setDatatype(M2MDataType.BOOLEAN);
