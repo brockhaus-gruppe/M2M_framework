@@ -19,8 +19,8 @@
 			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
 				<ref bean="start" />
 <!-- 				<ref bean="json_converter" />
-				<ref bean="http_sender" />   -->
-				<ref bean="rrd_handler" />
+				<ref bean="http_sender" />  
+				<ref bean="rrd_handler" />  -->
 			</list>
 		</property>
 	</bean>
@@ -32,23 +32,22 @@
 		<property name="continueProceeding" value="true" />
 		<property name="handlerChain" ref="handler_chain" />
 	</bean>
-
+<!--  
 	<bean name="start"
 		class="de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter"
 		parent="abstract_handler" scope="singleton">
 
-		<!-- the accepted message type -->
+		
 		<constructor-arg>
 			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
 		</constructor-arg>
-		<!-- the sent message type -->
 		<constructor-arg>
 			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
 		</constructor-arg>
-	</bean>
+	</bean> -->
 	<!-- sending 2 a rdd handler -->
-	<bean name="rrd_handler"
-		class="de.brockhaus.m2m.receiver.file.handler.brueckner.Message2RddHadler"
+	<bean name="start"
+		class="de.brockhaus.m2m.receiver.file.handler.brueckner.Message2RddHandler"
 		parent="abstract_handler" init-method="init" scope="singleton">
 
 		<!-- the accepted message type -->

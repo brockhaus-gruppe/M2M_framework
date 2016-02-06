@@ -33,7 +33,7 @@
                   <resource>META-INF/spring.schemas</resource>
                 </transformer>
                 <transformer>
-                  <mainClass>de.brockhaus.m2m.startup.StartM2MBaseChain</mainClass>
+                  <mainClass>de.brockhaus.m2m.startup.StartM2M_RMI2Dummy</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -46,6 +46,15 @@
     <repository>
       <id>Eclipse Paho Repo</id>
       <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+    </repository>
+    <repository>
+      <id>cumulocity</id>
+      <url>http://download.cumulocity.com/maven/repository</url>
+    </repository>
+    <repository>
+      <id>project.local</id>
+      <name>project</name>
+      <url>file:${basedir}/repo</url>
     </repository>
   </repositories>
   <dependencies>
@@ -69,10 +78,6 @@
         <exclusion>
           <artifactId>cdi-api</artifactId>
           <groupId>javax.enterprise</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>javax.inject</artifactId>
-          <groupId>javax.inject</groupId>
         </exclusion>
         <exclusion>
           <artifactId>mail</artifactId>

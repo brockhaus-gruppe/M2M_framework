@@ -34,7 +34,7 @@
 	</bean>
 
 	<bean name="start"
-		class="de.brockhaus.m2m.receiver.file.handler.brueckner.Message2RddHadler"
+		class="de.brockhaus.m2m.receiver.file.handler.brueckner.Message2RddHandler"
 		parent="abstract_handler" init-method="init" scope="singleton">
 
 		<!-- the accepted message type -->
