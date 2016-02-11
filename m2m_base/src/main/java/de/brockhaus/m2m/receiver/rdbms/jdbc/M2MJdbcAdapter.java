@@ -1,4 +1,4 @@
-package de.brockhaus.m2m.receiver.rdbms;
+package de.brockhaus.m2m.receiver.rdbms.jdbc;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

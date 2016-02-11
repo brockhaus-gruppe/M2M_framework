@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
-import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MPlainTextMessage;
 
 /**

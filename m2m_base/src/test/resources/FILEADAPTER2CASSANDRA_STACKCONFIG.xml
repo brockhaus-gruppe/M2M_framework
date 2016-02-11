@@ -85,7 +85,7 @@
 	<!-- ********************************** utilities and other ********************************** -->
 	<bean name="file_read_handler" class="de.brockhaus.m2m.receiver.file.handler.durr.IOMFileHandler" />
 	
-		<bean name="cassandra-dao"
+	<bean name="cassandra-dao"
 		class="de.brockhaus.m2m.handler.database.cassandra.SensorDataCassandraDAO" scope="singleton" 
 		init-method = "init"
 		destroy-method = "shutDown">

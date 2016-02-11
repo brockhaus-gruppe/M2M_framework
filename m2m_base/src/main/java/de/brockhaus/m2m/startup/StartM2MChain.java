@@ -20,7 +20,7 @@ import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
  */
 public class StartM2MChain {
 
-	private static String configFile = "M2M_File2Dummy.xml";
+	private static String configFile = "M2M_OPCUA2C8Y.xml";
 
 	private static M2MMessageReceiverLifecycle adapter;
 
