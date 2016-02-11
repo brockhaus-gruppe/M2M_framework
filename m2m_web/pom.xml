@@ -94,21 +94,21 @@
 			embedded Tomcat don*t include using 'regular Tomcat'
 			http://stackoverflow.com/questions/13876088/class-cast-exception-while-running-the-jsp-file
 		-->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.tomcat.embed</groupId> -->
-<!-- 			<artifactId>tomcat-embed-core</artifactId> -->
-<!-- 			<version>8.0.22</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.tomcat.embed</groupId> -->
-<!-- 			<artifactId>tomcat-embed-logging-juli</artifactId> -->
-<!-- 			<version>8.0.22</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.apache.tomcat.embed</groupId> -->
-<!-- 			<artifactId>tomcat-embed-jasper</artifactId> -->
-<!-- 			<version>8.0.22</version> -->
-<!-- 		</dependency> -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-core</artifactId>
+			<version>8.0.22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-logging-juli</artifactId>
+			<version>8.0.22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>8.0.22</version>
+		</dependency>
 
 		<!-- collections for buffering -->
 		<dependency>

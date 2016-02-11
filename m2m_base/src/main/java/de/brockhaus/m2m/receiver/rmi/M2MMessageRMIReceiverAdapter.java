@@ -123,6 +123,5 @@ public class M2MMessageRMIReceiverAdapter extends AbstractM2MMessageHandler impl
 	@Override
 	public void stop() {
 		System.exit(0);
-		
 	}
 }
