@@ -81,6 +81,7 @@ public class M2MMessageOpcUaReceiver extends AbstractM2MMessageHandler implement
 		case PROSYS:
 			handler = (OPCUAProsysHandler) handler;
 			break;
+		//others might follow
 		}
 
 		handler.setReceiver(this);

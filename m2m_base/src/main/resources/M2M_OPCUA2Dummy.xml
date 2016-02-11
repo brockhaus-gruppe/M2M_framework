@@ -53,7 +53,7 @@
     	<constructor-arg ref="prosys_handler" />
     	<!-- are we in simulation mode ? -->
     	<constructor-arg>
-        	<value type="java.lang.Boolean">false</value>
+        	<value type="java.lang.Boolean">true</value>
     	</constructor-arg>
     	
     	<!-- the handler, which will be used -->

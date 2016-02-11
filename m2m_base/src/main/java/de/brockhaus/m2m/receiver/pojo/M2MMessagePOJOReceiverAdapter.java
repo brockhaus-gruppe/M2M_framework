@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
+import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
 
 /**
  * Just something you can send to in plain java ...
@@ -30,7 +31,7 @@ import de.brockhaus.m2m.message.M2MMessageHandler;
  * @author mbohnen, May 14, 2015
  *
  */
-public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
+public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler implements M2MMessageReceiverLifecycle {
 	
 	private static final Logger LOG = Logger.getLogger(M2MMessagePOJOReceiverAdapter.class);
 	
@@ -49,5 +50,17 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler {
 		// need to do anything.
 		// so this is pro forma ...
 		this.setMessage(message);
+	}
+
+	@Override
+	public void start() {
+		// lazy, nothing to do
+		
+	}
+
+	@Override
+	public void stop() {
+		// lazy, nothing to do
+		
 	}
 }
