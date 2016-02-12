@@ -51,7 +51,7 @@
     	<constructor-arg ref="prosys_handler" />
     	<!-- are we in simulation mode ? -->
     	<constructor-arg>
-        	<value type="java.lang.Boolean">false</value>
+        	<value type="java.lang.Boolean">true</value>
     	</constructor-arg>
     	
     	<!-- the handler, which will be used -->
@@ -73,9 +73,51 @@
 		<constructor-arg>
 			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
 		</constructor-arg>
+		
+		<!-- the url, which will be used -->
+    	<property name="url">
+    		<value>https://brockhaus.cumulocity.com</value>
+    	</property>
+    	
+    	<!-- the user, which will be used -->
+    	<property name="user">
+    		<value>jperez@brockhaus-gruppe.de</value>
+    	</property>
+    	
+    	<!-- the password, which will be used -->
+    	<property name="pwd">
+    		<value>brockhaus</value>
+    	</property>
+    	
+    	<!-- the gid, which will be used -->
+    	<property name="gid">
+    		<value>10979</value>
+    	</property>
+    	
+    	<!-- the sensorsIdHelper holding all the sensors -->
+    	<property name="idHelper" ref = "sensorId_helper"/>
 	</bean>
 
 	<!-- ********************************** utilities and other ********************************** -->
+	<bean name="sensorId_helper" class="de.brockhaus.m2m.sender.c8y.util.SensorIdHelper"
+		scope="singleton">
+
+		<property name="sensorIds">
+			<map>
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap" value="10991" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor drilling machine" value="10992" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor loading station" value="10993" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor milling machine" value="10994" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor slider 1" value="10995" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Push-button slider 1 front" value="10996" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Push-button slider 1 rear" value="10997" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Push-button slider 2 front" value="10998" />
+				<entry key="Siemens PLC S7-1200.s7-1200.Inputs.Push-button slider 2 rear" value="10999" />
+			</map>
+		</property>
+	</bean>
+	
+	
 	<bean name="prosys_handler" class="de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler"
 		scope="singleton">
 		
