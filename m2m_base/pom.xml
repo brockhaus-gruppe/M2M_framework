@@ -47,6 +47,20 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.4.3</version>
+				<!-- http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar -->
+				<configuration>
+					<filters>
+						<filter>
+							<artifact>*:*</artifact>
+							<excludes>
+								<exclude>META-INF/*.SF</exclude>
+								<exclude>META-INF/*.DSA</exclude>
+								<exclude>META-INF/*.RSA</exclude>
+							</excludes>
+						</filter>
+					</filters>
+					<!-- Additional configuration. -->
+				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -66,7 +80,7 @@
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 
-									<mainClass>de.brockhaus.m2m.startup.StartM2M_RMI2Dummy</mainClass>
+									<mainClass>de.brockhaus.m2m.startup.StartM2MChain</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
