@@ -66,12 +66,12 @@ import de.brockhaus.m2m.util.ConfigServerRMIConnector;
 		</property>	
 
 	</bean>	
- * 
- * Project: communication.sender
+ *
+ * Project: m2m-base
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
- * @author mbohnen, May 4, 2015
+ * @author mbohnen, Feb 12, 2016
  *
  */
 public class M2MMessageSensorFilterHandler extends AbstractM2MMessageHandler implements ConfigurationChangeListener {
