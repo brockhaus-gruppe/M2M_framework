@@ -20,6 +20,8 @@ import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.sender.M2MSendingWorker;
+import de.brockhaus.m2m.sender.c8y.util.SensorIdHelper;
+import de.brockhaus.m2m.sender.c8y.util.SensorMeasurement;
 
 /**
  * Ensure the cumulocity agent (c8y-agent) is up'n'running
@@ -39,13 +41,12 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	private MeasurementApi measurement;
 	private InventoryApi inventory;
 
-	private String url = "https://brockhaus.cumulocity.com";
-	private String user = "jperez@brockhaus-gruppe.de";
-	private String pwd = "brockhaus";
-	private String gid = "10979";
+	private String url;
+	private String user;
+	private String pwd;
+	private String gid;
 	
-	//TODO change to DI
-	private SensorIdHelper idHelper = new SensorIdHelper();
+	private SensorIdHelper idHelper;
 	
 	public C8ySendingWorker() {
 		//lazy
@@ -105,7 +106,7 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 
 	private int convert2Numerical(String value) {
 
-		// being pretty optimistic ... nothing else can happen, no FooBazz e.g.
+		// being pretty optimistic ... presuming nothing else can happen, no FooBazz e.g.
 		// ;-)
 		if (value.toUpperCase().equals("TRUE")) {
 			return 1;
@@ -117,5 +118,45 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	private ManagedObjectRepresentation getSource(String SensorId) throws M2MCommunicationException {
 		GId gid = idHelper.getGIdBySensorName(SensorId);
 		return inventory.get(gid);
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	public SensorIdHelper getIdHelper() {
+		return idHelper;
+	}
+
+	public void setIdHelper(SensorIdHelper idHelper) {
+		this.idHelper = idHelper;
+	}
+
+	public String getGid() {
+		return gid;
+	}
+
+	public void setGid(String gid) {
+		this.gid = gid;
 	}
 }
