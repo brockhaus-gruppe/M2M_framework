@@ -20,33 +20,36 @@ import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
  */
 public class StartM2MChain {
 
-	private static String configFile = "M2M_OPCUA2C8Y.xml";
+	private String configFile = "M2M_OPCUA2C8Y.xml";
 
-	private static M2MMessageReceiverLifecycle adapter;
+	private M2MMessageReceiverLifecycle adapter;
 
 	public static void main(String[] args) {
 		if (Arrays.asList(args).size() > 0) {
-			configFile = args[0];
+			StartM2MChain chain = new StartM2MChain(args[0]);
+			chain.init();
+		} else {
+			new StartM2MChain();
 		}
-		StartM2MChain.init();
 	}
 	
 	public StartM2MChain() {
-		StartM2MChain.init();
+		this.init();
 	}
 	
 	public StartM2MChain(String chainConfig) {
 		this.configFile = chainConfig;
-		StartM2MChain.init();
+		this.init();
 	}
 
-	private static void init() {
-		ApplicationContext context = new ClassPathXmlApplicationContext(StartM2MChain.configFile);
+	private void init() {
+		ApplicationContext context = new ClassPathXmlApplicationContext(this.configFile);
 		adapter = (M2MMessageReceiverLifecycle) context.getBean("start");
 		adapter.start();
 	}
 
-	public static M2MMessageHandler getAdapter() {
+	// the first adapter within the chain
+	public M2MMessageHandler getAdapter() {
 		return (M2MMessageHandler) adapter;
 	}
 }
