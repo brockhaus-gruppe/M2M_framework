@@ -242,27 +242,22 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		// populate references
 		NodeId nodeId = Identifiers.RootFolder;
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Objects node & browse the references for this node
 		nodeId = selectNode(1);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Channel node "Siemens PLC S7-1200" & browse its references
 		nodeId = selectNode(14);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Device node "s7-1200" & browse its references
 		nodeId = selectNode(2);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the node "Inputs" & browse its references
 		nodeId = selectNode(3);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		for (int i = 0; i < readTags.length; i++)
 			TagsArray.add(i, selectNode(readTags[i]));

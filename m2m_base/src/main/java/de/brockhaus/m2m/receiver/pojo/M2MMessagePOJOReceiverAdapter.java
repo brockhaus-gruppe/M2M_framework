@@ -1,11 +1,18 @@
 package de.brockhaus.m2m.receiver.pojo;
 
+import java.util.Date;
+import java.util.Random;
+
 import org.apache.log4j.Logger;
 
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
+import de.brockhaus.m2m.message.M2MCommunicationException;
+import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMessageHandler;
 import de.brockhaus.m2m.message.M2MMessageReceiverLifecycle;
+import de.brockhaus.m2m.message.M2MMultiMessage;
+import de.brockhaus.m2m.message.M2MSensorMessage;
 
 /**
  * Just something you can send to in plain java ...
@@ -55,6 +62,12 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler imp
 	@Override
 	public void start() {
 		// lazy, nothing to do
+		try {
+			sendByNumbers(6, 1000);
+		} catch (M2MCommunicationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -62,5 +75,25 @@ public class M2MMessagePOJOReceiverAdapter extends AbstractM2MMessageHandler imp
 	public void stop() {
 		// lazy, nothing to do
 		
+	}
+	
+	private void sendByNumbers(int repeat, int interval)
+			throws M2MCommunicationException {
+
+		M2MSensorMessage msg = new M2MSensorMessage();
+		msg.setDatatype(M2MDataType.BOOLEAN);
+		for (int i = 0; i < repeat; i++) {
+			msg.setSensorId("");
+			msg.setValue(new Boolean("true").toString());
+			msg.setTime(new Date(System.currentTimeMillis()));
+			this.onMessageEvent(msg);	
+		
+			try {
+				Thread.currentThread().sleep(interval);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				}
+		}
 	}
 }
