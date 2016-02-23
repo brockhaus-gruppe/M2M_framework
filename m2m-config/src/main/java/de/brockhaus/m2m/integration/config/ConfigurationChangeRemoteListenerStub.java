@@ -1,20 +1,22 @@
-package de.brockhaus.m2m.config;
+package de.brockhaus.m2m.integration.config;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import org.apache.log4j.Logger;
 
+import de.brockhaus.m2m.config.ConfigurationChangeListener;
+import de.brockhaus.m2m.config.ConfigurationService;
 import de.brockhaus.m2m.util.ConfigServerRMIConnector;
 
 /**
- * If to be notified on config changes, this class has to be used. The reason behind this is, that most
+ * If to be notified by config changes, this class has to be used. The reason behind this is, that most
  * of the classes to be notified already extend AbstractM2MMessage handler and thus can't extend 
  * UnicastRemoteObject as well. Extending UnicastRemoteObject is a must in the field of RMI callbacks.
  * 
  * Include this class via Spring DI and everything will be done for you.
  * 
- * Project: m2m-base
+ * Project: m2m-config
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de

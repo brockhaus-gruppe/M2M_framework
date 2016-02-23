@@ -22,9 +22,9 @@ import de.brockhaus.m2m.integration.config.ConfigurationServiceImpl;
  * @author mbohnen, May 17, 2015
  *
  */
-public class StartServer {
+public class StartConfigServer {
 
-	private static final Logger LOG = Logger.getLogger(StartServer.class);
+	private static final Logger LOG = Logger.getLogger(StartConfigServer.class);
 	
 	public static void main(String[] args) throws RemoteException, MalformedURLException, AlreadyBoundException, UnknownHostException {
 		
@@ -34,6 +34,7 @@ public class StartServer {
 		
 		// using WELD container
 		ConfigurationServiceImpl service = new Weld().initialize().instance().select(ConfigurationServiceImpl.class).get();
+//		ConfigurationServiceImpl service = new ConfigurationServiceImpl();
 		LocateRegistry.createRegistry(1399);
 		
 		Naming.bind("rmi://"+localhostname+":"+port+"/config_service", service);

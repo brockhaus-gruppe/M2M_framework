@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Configuration implements Serializable {
 	
 	/** 
-	 * collection holding the config values, e.g.
+	 * collection holding the config values, e.g. 
 	 * 	CircularBufferDataContainer, capacity, 3
 	 * 		
 	 */

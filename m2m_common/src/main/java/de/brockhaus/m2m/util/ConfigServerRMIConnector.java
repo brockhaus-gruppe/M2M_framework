@@ -39,7 +39,7 @@ public class ConfigServerRMIConnector {
 		Properties props = new Properties();
 		ConfigurationService configService = null;
 		try {
-			props.load(ConfigServerRMIConnector.class.getClassLoader().getResourceAsStream("config.properties"));
+			props.load(ConfigServerRMIConnector.class.getClassLoader().getResourceAsStream("rmiconfig.properties"));
 			configService = (ConfigurationService) Naming.lookup("rmi://" 
 					+ props.getProperty("confighost") +":" 
 					+ props.getProperty("configport") + "/"

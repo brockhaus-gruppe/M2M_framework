@@ -14,7 +14,7 @@ import de.brockhaus.m2m.integration.annotation.JSONSerializer;
 
 /**
  * A serializer which writes the configuration to a JSON file. The file this serializer writes to
- * can be configured within config.properties.
+ * can be configured within configService.properties.
  * 
  * Project: integration_config
  *
@@ -36,7 +36,7 @@ public class Config2JSONSerializer implements ConfigSerializer {
 		Properties props = new Properties();
 		try {
 			// load a properties file
-			props.load(getClass().getClassLoader().getResourceAsStream("config.properties"));
+			props.load(getClass().getClassLoader().getResourceAsStream("configService.properties"));
 			this.file = new File(props.getProperty("jsonconfigfile"));
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

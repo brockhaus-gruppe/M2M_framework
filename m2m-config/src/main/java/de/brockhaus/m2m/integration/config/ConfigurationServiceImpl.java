@@ -20,15 +20,17 @@ import de.brockhaus.m2m.integration.annotation.JSONSerializer;
 
 /**
  * 
- * Project: integration_config
  *
- * Copyright (c) by Brockhaus Group www.brockhaus-gruppe.de
- * 
- * @author mbohnen, May 16, 2015
+ * Project: m2m-config
+ *
+ * Copyright (c) by Brockhaus Group
+ * www.brockhaus-gruppe.de
+ * @author mbohnen, Feb 22, 2016
  *
  */
 public class ConfigurationServiceImpl extends UnicastRemoteObject implements ConfigurationService, ConfigurationServiceLocal {
 	
+	// just a logger
 	private static Logger LOG = Logger.getLogger(ConfigurationServiceImpl.class);
 
 	// the serializer for the configuration ... the one who stores the data
@@ -42,7 +44,10 @@ public class ConfigurationServiceImpl extends UnicastRemoteObject implements Con
 	/** remote listeners for changes */
 	private List<ConfigurationChangeListener> remoteListeners = new CopyOnWriteArrayList<ConfigurationChangeListener>();
 
+	// the object holding the configuration
 	private Configuration config = new Configuration();
+
+	private boolean initialized;
 
 	public ConfigurationServiceImpl() throws RemoteException {
 		super();
@@ -52,6 +57,7 @@ public class ConfigurationServiceImpl extends UnicastRemoteObject implements Con
 	public void init() {
 		this.config = serializer.readConfiguration();
 	}
+
 
 	public Configuration getConfig() {
 		return config;
