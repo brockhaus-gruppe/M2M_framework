@@ -104,6 +104,7 @@ public class ConfigurationServiceImpl extends UnicastRemoteObject implements Con
 			}
 		}
 	}
+	
 	public void registerForChangesLocally(ConfigurationChangeListenerLocal listener) {
 		this.localListeners.add(listener);
 	}
