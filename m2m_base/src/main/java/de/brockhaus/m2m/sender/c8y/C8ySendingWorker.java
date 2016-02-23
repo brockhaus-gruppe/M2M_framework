@@ -1,6 +1,9 @@
 package de.brockhaus.m2m.sender.c8y;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -13,14 +16,16 @@ import com.cumulocity.sdk.client.PlatformImpl;
 import com.cumulocity.sdk.client.inventory.InventoryApi;
 import com.cumulocity.sdk.client.measurement.MeasurementApi;
 
+import de.brockhaus.m2m.config.ConfigurationServiceLocal;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
+import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
+import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.sender.M2MSendingWorker;
-import de.brockhaus.m2m.sender.c8y.util.SensorIdHelper;
 import de.brockhaus.m2m.sender.c8y.util.SensorMeasurement;
 
 /**
@@ -35,18 +40,34 @@ import de.brockhaus.m2m.sender.c8y.util.SensorMeasurement;
  */
 public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSendingWorker {
 
+	// just a logger
 	private static final Logger LOG = Logger.getLogger(C8ySendingWorker.class);
 
-	private Platform platform;
-	private MeasurementApi measurement;
-	private InventoryApi inventory;
-
+	// cumulocity URL
 	private String url;
+
+	//cumulocity user
 	private String user;
+	
+	// cumulocity pwd
 	private String pwd;
+	
+	// the device we're sending to
 	private String gid;
 	
-	private SensorIdHelper idHelper;
+	// cumulocity platform
+	private Platform platform;
+	
+	// cumulocity measurementAPI
+	private MeasurementApi measurementAPI;
+	
+	// cumulocity inventoryAPI
+	private InventoryApi inventoryAPI;
+	
+	private ConfigurationServiceFactory configServiceFactory;
+
+	private ArrayList<C8YSensorMapping> sensorMappings;
+	
 	
 	public C8ySendingWorker() {
 		//lazy
@@ -57,12 +78,35 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	}
 
 	public void init() {
+		ConfigurationServiceLocal configService = configServiceFactory.getConfigurationServiceLocal();		
+		
+		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors");
+		sensorMappings = new ArrayList<C8YSensorMapping>();
+		Collection<String> sensorMappingData = sensors.values();
+		
+		for (String sensorMappingString : sensorMappingData) {
+			// ArrayIndex, own GId, parent GId, sensor name
+			//"0;10991;11654;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
+			String[] data = sensorMappingString.split(";");
+			sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
+		}
+		// getting the data from config service: credentials
+		HashMap<String, String> credentials = configService.getConfig().getConfigForElement("credentials");
+		this.user = credentials.get("user");
+		this.pwd = credentials.get("pwd");
+		this.url = credentials.get("url");
+
+		// getting the data from config service: devices
+		HashMap<String, String> devices = configService.getConfig().getConfigForElement("devices");
+		ArrayList<String> gids = new ArrayList<String>(devices.values());
+		this.gid = gids.get(0);
+
 		// Create the platform instance
 		platform = new PlatformImpl(url, new CumulocityCredentials(user, pwd));
-		inventory = platform.getInventoryApi();
-		LOG.debug("Device name: " + (inventory.get(new GId(gid)).getName()));
+		inventoryAPI = platform.getInventoryApi();
+		LOG.debug("Device name: " + (inventoryAPI.get(new GId(gid)).getName()));
 		// Access individual API resource object
-		measurement = platform.getMeasurementApi();
+		measurementAPI = platform.getMeasurementApi();
 	}
 
 	@Override
@@ -101,13 +145,12 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		default:
 			throw new M2MCommunicationException("Datatype can't be handled by sender");
 		}
-		measurement.create(representation);
+		measurementAPI.create(representation);
 	}
 
 	private int convert2Numerical(String value) {
 
-		// being pretty optimistic ... presuming nothing else can happen, no FooBazz e.g.
-		// ;-)
+		// being pretty optimistic ... presuming nothing else can happen, no FooBazz or stuff like this ;-)
 		if (value.toUpperCase().equals("TRUE")) {
 			return 1;
 		} else {
@@ -115,48 +158,25 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		}
 	}
 	
-	private ManagedObjectRepresentation getSource(String SensorId) throws M2MCommunicationException {
-		GId gid = idHelper.getGIdBySensorName(SensorId);
-		return inventory.get(gid);
+	private ManagedObjectRepresentation getSource(String sensorId) throws M2MCommunicationException {
+		
+		ManagedObjectRepresentation representation = null;
+		
+		for (C8YSensorMapping c8ySensorMapping : sensorMappings) {
+			if(c8ySensorMapping.getSensorName().equals(sensorId)) {
+				GId gid = new GId(c8ySensorMapping.getOwnGId());
+				representation = inventoryAPI.get(gid);
+			}
+		}
+		
+		return representation;
 	}
 
-	public String getUrl() {
-		return url;
+	public ConfigurationServiceFactory getConfigServiceFactory() {
+		return configServiceFactory;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
-	public String getUser() {
-		return user;
-	}
-
-	public void setUser(String user) {
-		this.user = user;
-	}
-
-	public String getPwd() {
-		return pwd;
-	}
-
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-
-	public SensorIdHelper getIdHelper() {
-		return idHelper;
-	}
-
-	public void setIdHelper(SensorIdHelper idHelper) {
-		this.idHelper = idHelper;
-	}
-
-	public String getGid() {
-		return gid;
-	}
-
-	public void setGid(String gid) {
-		this.gid = gid;
+	public void setConfigServiceFactory(ConfigurationServiceFactory configServiceFactory) {
+		this.configServiceFactory = configServiceFactory;
 	}
 }

@@ -179,7 +179,7 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 			}
 		} else {
 			try {
-				new OPCProsysSimServer(this).sendMessages();
+				new OPCProsysSimulationServer(this).sendMessages();
 			} catch (InterruptedException e) {
 				LOG.error(e);
 			}	

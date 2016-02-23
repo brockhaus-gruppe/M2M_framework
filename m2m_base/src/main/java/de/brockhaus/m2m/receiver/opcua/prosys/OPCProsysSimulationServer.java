@@ -10,10 +10,8 @@ import org.opcfoundation.ua.builtintypes.Variant;
 
 import com.prosysopc.ua.client.MonitoredDataItem;
 
-import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
-
 /**
- * Simulating OPC data which will be send to the (Prosys)Handler.
+ * Simulating OPC data which will be send to the (Prosys) Handler.
  *
  * Project: m2m-base
  *
@@ -22,20 +20,22 @@ import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
  * @author mbohnen, Jan 23, 2016
  *
  */
-public class OPCProsysSimServer {
+public class OPCProsysSimulationServer {
 
 	private OPCUAProsysHandler handler;
 	
 	//TODO Dependency Injection
 	private long interval = 2000;
 	
-	public OPCProsysSimServer(OPCUAProsysHandler handler) {
+	public OPCProsysSimulationServer(OPCUAProsysHandler handler) {
 		this.handler = handler;
+		
 	}
 	
-	public void sendMessages() throws InterruptedException{
+	public void sendMessages() throws InterruptedException {
+		
 		while(true) {
-			MonitoredDataItem item = new MonitoredDataItem(new NodeId(13, "[Simulation] Push-button slider 2 read"));
+			MonitoredDataItem item = new MonitoredDataItem(new NodeId(13, "Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor drilling machine"));
 			DataValue oldVal = new DataValue();
 			oldVal.setServerTimestamp(new DateTime(new GregorianCalendar()));
 			Random r = new Random();

@@ -74,31 +74,16 @@
 			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
 		</constructor-arg>
 		
-		<!-- the url, which will be used -->
-    	<property name="url">
-    		<value>https://brockhaus.cumulocity.com</value>
-    	</property>
-    	
-    	<!-- the user, which will be used -->
-    	<property name="user">
-    		<value>jperez@brockhaus-gruppe.de</value>
-    	</property>
-    	
-    	<!-- the password, which will be used -->
-    	<property name="pwd">
-    		<value>brockhaus</value>
-    	</property>
-    	
-    	<!-- the gid, which will be used -->
-    	<property name="gid">
-    		<value>10979</value>
-    	</property>
     	
     	<!-- the sensorsIdHelper holding all the sensors -->
-    	<property name="idHelper" ref = "sensorId_helper"/>
+    	<property name="configServiceFactory" ref = "config_service_factory"/>
 	</bean>
 
 	<!-- ********************************** utilities and other ********************************** -->
+	
+	<bean name="config_service_factory" class="de.brockhaus.m2m.integration.config.ConfigurationServiceFactory" />
+	
+	<!-- the sensors which are registered at cumulocity 
 	<bean name="sensorId_helper" class="de.brockhaus.m2m.sender.c8y.util.SensorIdHelper"
 		scope="singleton">
 
@@ -116,7 +101,7 @@
 			</map>
 		</property>
 	</bean>
-	
+	-->
 	
 	<bean name="prosys_handler" class="de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler"
 		scope="singleton">

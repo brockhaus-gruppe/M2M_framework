@@ -97,6 +97,12 @@
 			<artifactId>m2m-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>de.brockhaus.m2m</groupId>
+			<artifactId>m2m-config</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
