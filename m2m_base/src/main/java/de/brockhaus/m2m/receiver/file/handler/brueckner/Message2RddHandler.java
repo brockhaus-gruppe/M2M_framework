@@ -73,19 +73,21 @@ public class Message2RddHandler extends AbstractM2MMessageHandler implements M2M
 			this.bulkInsertOfSensorData(((M2MMultiMessage) message).getSensorDataMessageList());
 		} else {
 			LOG.debug("We can't handle this message");
-			//this.dao.insertSensorData((M2MSensorMessage) message);
 		}
 
 	}
 
 	public void bulkInsertOfSensorData(List<M2MSensorMessage> list){
 		List<String> MessageData = new ArrayList<String>();
+		
 		for(M2MSensorMessage msg : list){
 			LOG.debug("Getting message : "+msg.getSensorId()+", "+msg.getDatatype()+", "+msg.getTime()+", "+msg.getValue());
 			MessageData.add(msg.getSensorId()+" "+msg.getDatatype()+" "+msg.getTime()+" "+msg.getValue());
 		}
+		
 		LOG.debug("loading bulk of sensor data into rdd");
 		JavaRDD<String> javaRDDMessage = sc.parallelize(MessageData);
+		
 		LOG.debug(javaRDDMessage.count()+" elements into rdd Message");
 		M2MRddMessage rddMessage = new M2MRddMessage();
 		rddMessage.setRddMessage(javaRDDMessage);
@@ -107,14 +109,10 @@ public class Message2RddHandler extends AbstractM2MMessageHandler implements M2M
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
