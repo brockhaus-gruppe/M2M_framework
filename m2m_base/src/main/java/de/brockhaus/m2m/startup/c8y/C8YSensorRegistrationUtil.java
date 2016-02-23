@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.cumulocity.model.authentication.CumulocityCredentials;
 import com.cumulocity.model.idtype.GId;
 import com.cumulocity.rest.representation.inventory.ManagedObjectRepresentation;
@@ -30,16 +32,18 @@ import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
  */
 public class C8YSensorRegistrationUtil 
 {
+	private static final Logger LOG = Logger.getLogger(C8YSensorRegistrationUtil.class);
+	
 	private String url;
 	private String user;
 	private String pwd;
 	private List<String> gids;
-	private ArrayList<C8YSensorMapping> sensorMappings;
+	private List<C8YSensorMapping> sensorMappings;
+	private List<C8YSensorMapping> updatedSensorMappings = new ArrayList<C8YSensorMapping>();
 	private GId gid;
 	private ManagedObject mo;
 	private InventoryApi inventory;
 
-	
 	private static ConfigurationServiceLocal configService = ConfigurationServiceFactory.getConfigurationServiceLocal();
 
 	public static void main(String[] args) {
@@ -48,6 +52,7 @@ public class C8YSensorRegistrationUtil
 		// initialize the sensors list
 		util.init();
 		util.doRegister();
+		util.writeUpdatedConfig();
 		
 		System.exit(0);
 		
@@ -101,9 +106,28 @@ public class C8YSensorRegistrationUtil
 			// create the sensor managed object in the inventory and assign it a
 			// device ID
 			morr = inventory.create(morr);
+			
+			GId childGId = morr.getId();
+			LOG.debug("creating child device: " + mapping.getSensorName() + " and GId: " + childGId);
 
 			// add the sensor as a children device to the main device
-			mo.addChildDevice(morr.getId());
+			mo.addChildDevice(childGId);
+			
+			mapping.setOwnGId(childGId.getValue());
+			this.updatedSensorMappings.add(mapping);
 		}
+	}
+	
+	private void writeUpdatedConfig() {
+		HashMap<String, String> updated = new HashMap<String, String>();
+		for (C8YSensorMapping mapping : updatedSensorMappings) {
+			updated.put(new Integer(mapping.getArrayIndex()).toString(), mapping.toString());
+		}
+		
+		Configuration config = this.configService.getConfig();
+		config.setConfigForElement("sensors", updated);
+		
+		this.configService.updateConfig(config);
+		
 	}
 }
