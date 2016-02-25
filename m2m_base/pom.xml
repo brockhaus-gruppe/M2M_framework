@@ -97,7 +97,7 @@
 			<artifactId>m2m-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>de.brockhaus.m2m</groupId>
 			<artifactId>m2m-config</artifactId>
@@ -204,19 +204,14 @@
 			</exclusions>
 		</dependency>
 
-		<!-- Java EE -->
+		<!-- Java EE <dependency> <groupId>org.jboss.spec</groupId> <artifactId>jboss-javaee-6.0</artifactId> 
+			<version>3.0.0.Final</version> <type>pom</type> <exclusions> <exclusion> 
+			<groupId>xalan</groupId> <artifactId>xalan</artifactId> </exclusion> </exclusions> 
+			<scope>provided</scope> </dependency> -->
 		<dependency>
-			<groupId>org.jboss.spec</groupId>
-			<artifactId>jboss-javaee-6.0</artifactId>
-			<version>3.0.0.Final</version>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<groupId>xalan</groupId>
-					<artifactId>xalan</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>provided</scope>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
 		</dependency>
 
 		<!-- ActiveMQ -->
