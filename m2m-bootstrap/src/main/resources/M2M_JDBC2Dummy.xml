@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+
+	<!-- for questions check here: http://www.tutorialspoint.com/spring/ -->
+
+	<!-- Enable AspectJ style of Spring AOP -->
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<!-- ********************************** handler chain ************************************************ -->
+	<bean id="handler_chain" class="de.brockhaus.m2m.handler.HandlerChainHolder"
+		scope="singleton">
+		<property name="stack">
+			<list value-type="de.brockhaus.m2m.message.M2MMessageHandler">
+				<ref bean="start" />
+				<ref bean="json_converter" />
+<!-- 				<ref bean="http_sender" /> -->
+				<ref bean="dummy_sender" />
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- ********************************** handler configuration ********************************** -->
+	<bean id="abstract_handler" class="de.brockhaus.m2m.handler.AbstractM2MMessageHandler"
+		abstract="true" scope="singleton">
+		<property name="continueProceeding" value="true" />
+		<property name="handlerChain" ref="handler_chain" />
+	</bean>
+
+	<!-- the adapter where everything starts -->
+	<!-- JDBC adapter -->
+	<bean name="start"
+		class="de.brockhaus.m2m.receiver.rdbms.M2MJdbcAdapter" 
+		parent = "abstract_handler"
+		init-method="init"
+		scope="singleton" >
+		
+		<!-- the last in line, no following handler -->
+		<constructor-arg name = "next" ref="json_converter" />
+	
+		<!-- the accepted message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+    	</constructor-arg>
+    	<!-- the sent message type -->
+		<constructor-arg>
+        	<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+    	</constructor-arg>
+    	
+    	<property name="datasource" ref="datasource"/>
+    	
+		<property name = "query">
+			<value>SELECT * FROM SENSORDATA</value>
+		</property>
+		
+		<!-- mapping between a M2MSensorMessage and the columns we get by the JDBC ResultSet -->
+		<property name="sensorMessageMapping">
+			<map>
+				<entry key="sensorId" value="SENSOR_ID" />
+				<entry key="datatype" value="DATATYPE" />
+				<entry key="time" value="TIME" />
+				<entry key="value" value="VALUE" />
+			</map>
+		</property>
+		
+	</bean>	
+	
+	<!-- converting the message to JSON -->
+	<bean name="json_converter"
+		class="de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler"
+		parent="abstract_handler" scope="singleton">
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MMultiMessage</value>
+		</constructor-arg>
+		<!-- the sent message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+		</constructor-arg>
+
+	</bean>
+
+	<!-- sending 2 a dummy -->
+	<bean name="dummy_sender" class="de.brockhaus.m2m.sender.dummy.DummySendingWorker"
+		parent="abstract_handler" scope="singleton">
+
+		<!-- the accepted message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+		</constructor-arg>
+	 	<!-- the sent message type  -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MSensorMessage</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- sending through http -->
+	<bean name="http_sender" class="de.brockhaus.m2m.sender.http.HTTPSendingWorker"
+		scope="singleton">
+
+		<!-- the accepted message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+		</constructor-arg>
+		<!-- the sent message type -->
+		<constructor-arg>
+			<value type="java.lang.String">de.brockhaus.m2m.message.M2MPlainTextMessage</value>
+		</constructor-arg>
+
+		<!-- who deals with the file once content is sent -->
+		<property name="url">
+			<value>http://localhost:8080/sensorData/sensorDataReceiver</value>
+		</property>
+
+	</bean>
+
+	<!-- ********************************** utilities and other ********************************** -->
+	<!-- Scheduling -->
+	<bean name="m2m_scheduler"
+		class="de.brockhaus.m2m.util.M2MTaskScheduler"
+		scope="singleton" >
+		
+		<property name = "target" ref = "jdbc_adapter"/>
+		
+		<!-- how long to wait once started -->
+		<property name = "initialDelay">
+			<value>1000</value>
+		</property>
+		
+		
+		<!-- delay between two invocations -->
+    	<property name = "delay">
+			<value>2000</value>
+		</property>
+		
+		<!-- if granted -->
+		<property name="timeUnit">
+			<value>MILLISECONDS</value>
+		</property>
+
+	</bean>	
+	
+	<!-- the datasource -->
+	<bean name="datasource"
+		class="de.brockhaus.m2m.util.M2MJdbcDataSource"
+		scope="singleton" >
+		
+		<!-- the jdbc driver -->
+		<property name = "driver">
+			<value>org.h2.Driver</value>
+		</property>
+		
+		<!-- where to find the database -->
+    	<property name = "url">
+			<value>jdbc:h2:tcp://localhost///media/DataOne/work/projects/Industry40/database/data/sensordata</value>
+		</property>
+		
+		<!-- user -->
+		<property name="username">
+			<value>sa</value>
+		</property>
+		
+		<!-- password -->
+		<property name="password">
+			<value></value>
+		</property>
+	</bean>	
+
+
+	<!-- *********************************** AOP ************************************************* -->
+	<!-- Performance Logging Aspect 
+	<bean id="logAspect" class="de.brockhaus.m2m.aspect.PerformanceLogAspect"
+		scope="prototype" />
+	<aop:config>
+		<aop:aspect id="aspectLogging" ref="logAspect">
+			<aop:pointcut id="pointCutAroundM2MMessagePOJOReceiverAdapter"
+				expression="execution( 
+		* de.brockhaus.m2m.receiver.pojo.M2MMessagePOJOReceiverAdapter.handleMessage(..)) 
+		|| execution( * de.brockhaus.m2m.handler.converter.Message2JSONConverterHandler.handleMessage(..))" />
+			<aop:around method="logAroundExecutionTime"
+				pointcut-ref="pointCutAroundM2MMessagePOJOReceiverAdapter" />
+		</aop:aspect>
+	</aop:config>
+	-->
+
+</beans>
