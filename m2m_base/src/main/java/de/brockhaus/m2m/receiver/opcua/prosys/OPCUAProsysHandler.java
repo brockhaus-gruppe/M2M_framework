@@ -351,5 +351,11 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 
 	public void setReadTags(int[] readTags) {
 		this.readTags = readTags;
-	}	
+	}
+
+//	@Override
+//	public void setSender(OPCUASendingWorker sender) {
+//		// TODO Auto-generated method stub
+//		
+//	}	
 }
