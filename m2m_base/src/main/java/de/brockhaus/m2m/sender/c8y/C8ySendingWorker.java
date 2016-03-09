@@ -146,6 +146,7 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 			throw new M2MCommunicationException("Datatype can't be handled by sender");
 		}
 		measurementAPI.create(representation);
+		LOG.debug("Sending 2 C8Y: GId + " + representation.getSource().getId().getValue() +  " Sensor: " + msg.getSensorId());
 	}
 
 	private int convert2Numerical(String value) {
@@ -158,12 +159,15 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		}
 	}
 	
+	
 	private ManagedObjectRepresentation getSource(String sensorId) throws M2MCommunicationException {
 		
 		ManagedObjectRepresentation representation = null;
 		
 		for (C8YSensorMapping c8ySensorMapping : sensorMappings) {
 			if(c8ySensorMapping.getSensorName().equals(sensorId)) {
+				
+				// getting representation from c8y by GId from config service
 				GId gid = new GId(c8ySensorMapping.getOwnGId());
 				representation = inventoryAPI.get(gid);
 			}

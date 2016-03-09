@@ -75,7 +75,6 @@ public class MQTTUtil {
 
 	        } catch (SocketException e) {
 	            System.out.println("Could not find out MAC Adress. Exiting Application ");
-	            System.exit(1);
 	        }
 	        return result;
 	}

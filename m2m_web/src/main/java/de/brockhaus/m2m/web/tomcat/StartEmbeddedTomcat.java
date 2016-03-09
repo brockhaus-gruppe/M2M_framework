@@ -15,11 +15,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class StartEmbeddedTomcat {
 
-	private static String configFile = "EmbeddedTomcatConfig.xml";
-	
-	public static void main(String[] args) {
-		ApplicationContext context= new ClassPathXmlApplicationContext(configFile);
-		TomcatEmbeddedRunner runner = (TomcatEmbeddedRunner) context.getBean("emb_tc");
-		runner.startServer();
-	}
+//	private static String configFile = "EmbeddedTomcatConfig.xml";
+//	
+//	public static void main(String[] args) {
+//		ApplicationContext context= new ClassPathXmlApplicationContext(configFile);
+//		TomcatEmbeddedRunner runner = (TomcatEmbeddedRunner) context.getBean("emb_tc");
+//		runner.startServer();
+//	}
 }

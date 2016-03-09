@@ -153,7 +153,6 @@ public class JMSActiveMQSendingWorker extends AbstractM2MMessageHandler {
 			this.session.close();
 			this.producer.close();
 			this.connection.close();
-			System.exit(0);
 			
 		} catch (JMSException e) {		
 			e.printStackTrace();

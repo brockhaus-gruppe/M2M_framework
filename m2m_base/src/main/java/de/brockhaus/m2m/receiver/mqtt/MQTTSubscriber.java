@@ -53,7 +53,7 @@ public class MQTTSubscriber extends AbstractM2MMessageHandler  {
 
 		} catch (MqttException e) {
 			e.printStackTrace();
-			System.exit(1);
+			System.exit(0);
 		}
 	}
 	

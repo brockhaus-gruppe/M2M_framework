@@ -50,7 +50,7 @@ public class MQTTTestSubscriber {
 
 		} catch (MqttException e) {
 			e.printStackTrace();
-			System.exit(1);
+
 		}
 	}
 }

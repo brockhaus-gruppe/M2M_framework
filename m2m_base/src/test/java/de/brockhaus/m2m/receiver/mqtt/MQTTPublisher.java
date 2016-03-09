@@ -33,8 +33,7 @@ public class MQTTPublisher {
 		MQTTPublisher client = new MQTTPublisher();
 		client.init();
 		client.publish();
-		
-		System.exit(0);
+
 	}
 	
 	

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -25,6 +26,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
  * @author mbohnen, Dec 28, 2015
  *
  */
+@Ignore
 public class DataAggregationHandlerTest {
 	
 	private static String configFile = "test/DATAAGGREGATIONONLY_STACKCONFIG.xml";

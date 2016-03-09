@@ -67,6 +67,6 @@ public class SensorDataReceiverServlet extends HttpServlet {
 	}
 	
 	public void init() throws ServletException {
-		
+		// lazy
 	}
 }

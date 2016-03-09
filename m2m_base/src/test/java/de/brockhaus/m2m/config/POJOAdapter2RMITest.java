@@ -35,7 +35,7 @@ public class POJOAdapter2RMITest {
 		POJOAdapter2RMITest test = new POJOAdapter2RMITest();
 		test.init();
 
-		test.sendByNumbers(30, 10);
+		test.sendByNumbers(3, 10);
 		// test.sendForever(1000);
 	}
 

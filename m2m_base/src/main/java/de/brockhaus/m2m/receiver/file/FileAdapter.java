@@ -278,6 +278,6 @@ public class FileAdapter extends AbstractM2MMessageHandler implements FileHandle
 
 	@Override
 	public void stop() {
-		System.exit(0);	
+		
 	}
 }

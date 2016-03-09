@@ -130,7 +130,6 @@ public class M2MMessageOpcUaReceiver extends AbstractM2MMessageHandler implement
 
 	@Override
 	public void stop() {
-		System.exit(0);
 		
 	}
 }

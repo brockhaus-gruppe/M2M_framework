@@ -11,12 +11,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * 
- * Project: comcommon
+ *
+ * Project: m2m-common
  *
  * Copyright (c) by Brockhaus Group
  * www.brockhaus-gruppe.de
  * @author mbohnen, May 16, 2015
- *
+ * 
  */
 public class JSONBuilderParserUtil {
 

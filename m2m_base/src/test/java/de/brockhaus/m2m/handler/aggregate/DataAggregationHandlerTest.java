@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import de.brockhaus.m2m.handler.aggregate.DataAggregationHandler.AggregationType;
@@ -12,6 +13,17 @@ import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 
+/**
+ * 
+ *
+ * Project: m2m-base
+ *
+ * Copyright (c) by Brockhaus Group
+ * www.brockhaus-gruppe.de
+ * @author mbohnen, Feb 12, 2016
+ *
+ */
+@Ignore
 public class DataAggregationHandlerTest {
 	
 	private static M2MMultiMessage messages;
@@ -63,6 +75,7 @@ public class DataAggregationHandlerTest {
 	}
 	
 
+	
 	@BeforeClass
 	public static void setUp() {
 		messages = new M2MMultiMessage();

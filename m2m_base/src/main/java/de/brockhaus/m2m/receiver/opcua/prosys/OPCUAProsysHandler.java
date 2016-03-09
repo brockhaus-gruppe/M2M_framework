@@ -33,6 +33,7 @@ import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 import de.brockhaus.m2m.receiver.opcua.OPCUAHandler;
+import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
 
 /**
  * The Prosys proprietary handler to read the data from an OPC Server.
@@ -242,27 +243,22 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		// populate references
 		NodeId nodeId = Identifiers.RootFolder;
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Objects node & browse the references for this node
 		nodeId = selectNode(1);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Channel node "Siemens PLC S7-1200" & browse its references
 		nodeId = selectNode(14);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the Device node "s7-1200" & browse its references
 		nodeId = selectNode(2);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		// select the node "Inputs" & browse its references
 		nodeId = selectNode(3);
 		references = client.getAddressSpace().browse(nodeId);
-		// browse(nodeId);
 
 		for (int i = 0; i < readTags.length; i++)
 			TagsArray.add(i, selectNode(readTags[i]));
@@ -353,9 +349,11 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		this.readTags = readTags;
 	}
 
+
 //	@Override
 //	public void setSender(OPCUASendingWorker sender) {
 //		// TODO Auto-generated method stub
 //		
 //	}	
+
 }
