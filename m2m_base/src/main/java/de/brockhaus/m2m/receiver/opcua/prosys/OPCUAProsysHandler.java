@@ -319,6 +319,10 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 	public M2MMessageOpcUaReceiver getReceiver() {
 		return receiver;
 	}
+	
+	public void setSender(OPCUASendingWorker sender) {
+		
+	}
 
 	public void setReceiver(M2MMessageOpcUaReceiver receiver) {
 		this.receiver = receiver;
@@ -348,10 +352,4 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 	public void setReadTags(int[] readTags) {
 		this.readTags = readTags;
 	}
-
-	@Override
-	public void setSender(OPCUASendingWorker sender) {
-		// TODO Auto-generated method stub
-		
-	}	
 }

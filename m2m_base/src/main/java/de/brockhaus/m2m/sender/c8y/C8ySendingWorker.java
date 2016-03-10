@@ -80,13 +80,13 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	public void init() {
 		ConfigurationServiceLocal configService = configServiceFactory.getConfigurationServiceLocal();		
 		
-		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors");
+		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors_inputs");
 		sensorMappings = new ArrayList<C8YSensorMapping>();
 		Collection<String> sensorMappingData = sensors.values();
 		
 		for (String sensorMappingString : sensorMappingData) {
 			// ArrayIndex, own GId, parent GId, sensor name
-			//"0;10991;11654;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
+			//"0;10991;10979;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
 			String[] data = sensorMappingString.split(";");
 			sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
 		}
