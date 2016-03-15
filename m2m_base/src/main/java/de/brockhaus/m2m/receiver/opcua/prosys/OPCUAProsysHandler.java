@@ -33,10 +33,10 @@ import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 import de.brockhaus.m2m.receiver.opcua.OPCUAHandler;
-import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
+//import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
 
 /**
- * The Prosys proprietary handler to read the data from an OPC Server.
+ * The Prosys proprietary handler to read and write the data from an OPC Server.
  * 
 	<bean name="prosys_handler" class="de.brockhaus.m2m.receiver.opcua.prosys.OPCUAProsysHandler"
 		scope="singleton">
