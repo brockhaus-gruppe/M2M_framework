@@ -21,16 +21,16 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.1</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>1.7</source>
+					<target>1.7</target>
 				</configuration>
 			</plugin>
 			<!-- uncomments in case you want a executable jar: mvn clean package -->
+			<!-- http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>2.4.3</version>
-				<!-- http://stackoverflow.com/questions/999489/invalid-signature-file-when-attempting-to-run-a-jar -->
 				<configuration>
 					<filters>
 						<filter>
@@ -41,8 +41,7 @@
 								<exclude>META-INF/*.RSA</exclude>
 							</excludes>
 						</filter>
-					</filters>
-					<!-- Additional configuration. -->
+					</filters>	
 				</configuration>
 				<executions>
 					<execution>
@@ -62,7 +61,6 @@
 								</transformer>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-
 									<mainClass>de.brockhaus.m2m.startup.StartM2MChain</mainClass>
 								</transformer>
 							</transformers>
@@ -79,6 +77,12 @@
 			<groupId>de.brockhaus.m2m</groupId>
 			<artifactId>m2m-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>javax.servlet</artifactId>
+					<groupId>org.eclipse.jetty.orbit</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		
 		<dependency>
@@ -182,6 +186,10 @@
 				<exclusion>
 					<groupId>org.jvnet.staxex</groupId>
 					<artifactId>stax-ex</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>

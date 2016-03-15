@@ -88,10 +88,6 @@
           <groupId>xalan</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>cdi-api</artifactId>
-          <groupId>javax.enterprise</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>mail</artifactId>
           <groupId>javax.mail</groupId>
         </exclusion>
@@ -122,10 +118,6 @@
         <exclusion>
           <artifactId>jboss-jsf-api_2.1_spec</artifactId>
           <groupId>org.jboss.spec.javax.faces</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
-          <groupId>org.jboss.spec.javax.interceptor</groupId>
         </exclusion>
         <exclusion>
           <artifactId>jboss-j2eemgmt-api_1.1_spec</artifactId>

@@ -18,8 +18,8 @@ import com.cumulocity.sdk.client.measurement.MeasurementApi;
 
 import de.brockhaus.m2m.config.ConfigurationServiceLocal;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
-//import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
-//import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
+import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
+import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
@@ -64,9 +64,9 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	// cumulocity inventoryAPI
 	private InventoryApi inventoryAPI;
 	
-//	private ConfigurationServiceFactory configServiceFactory;
-//
-//	private ArrayList<C8YSensorMapping> sensorMappings;
+	private ConfigurationServiceFactory configServiceFactory;
+
+	private ArrayList<C8YSensorMapping> sensorMappings;
 	
 	
 	public C8ySendingWorker() {
@@ -78,35 +78,35 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	}
 
 	public void init() {
-//		ConfigurationServiceLocal configService = configServiceFactory.getConfigurationServiceLocal();		
-//		
-//		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors");
-//		sensorMappings = new ArrayList<C8YSensorMapping>();
-//		Collection<String> sensorMappingData = sensors.values();
-//		
-//		for (String sensorMappingString : sensorMappingData) {
-//			// ArrayIndex, own GId, parent GId, sensor name
-//			//"0;10991;11654;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
-//			String[] data = sensorMappingString.split(";");
-//			sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
-//		}
-//		// getting the data from config service: credentials
-//		HashMap<String, String> credentials = configService.getConfig().getConfigForElement("credentials");
-//		this.user = credentials.get("user");
-//		this.pwd = credentials.get("pwd");
-//		this.url = credentials.get("url");
-//
-//		// getting the data from config service: devices
-//		HashMap<String, String> devices = configService.getConfig().getConfigForElement("devices");
-//		ArrayList<String> gids = new ArrayList<String>(devices.values());
-//		this.gid = gids.get(0);
-//
-//		// Create the platform instance
-//		platform = new PlatformImpl(url, new CumulocityCredentials(user, pwd));
-//		inventoryAPI = platform.getInventoryApi();
-//		LOG.debug("Device name: " + (inventoryAPI.get(new GId(gid)).getName()));
-//		// Access individual API resource object
-//		measurementAPI = platform.getMeasurementApi();
+		ConfigurationServiceLocal configService = configServiceFactory.getConfigurationServiceLocal();		
+		
+		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors_inputs");
+		sensorMappings = new ArrayList<C8YSensorMapping>();
+		Collection<String> sensorMappingData = sensors.values();
+		
+		for (String sensorMappingString : sensorMappingData) {
+			// ArrayIndex, own GId, parent GId, sensor name
+			//"0;10991;10979;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
+			String[] data = sensorMappingString.split(";");
+			sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
+		}
+		// getting the data from config service: credentials
+		HashMap<String, String> credentials = configService.getConfig().getConfigForElement("credentials");
+		this.user = credentials.get("user");
+		this.pwd = credentials.get("pwd");
+		this.url = credentials.get("url");
+
+		// getting the data from config service: devices
+		HashMap<String, String> devices = configService.getConfig().getConfigForElement("devices");
+		ArrayList<String> gids = new ArrayList<String>(devices.values());
+		this.gid = gids.get(0);
+
+		// Create the platform instance
+		platform = new PlatformImpl(url, new CumulocityCredentials(user, pwd));
+		inventoryAPI = platform.getInventoryApi();
+		LOG.debug("Device name: " + (inventoryAPI.get(new GId(gid)).getName()));
+		// Access individual API resource object
+		measurementAPI = platform.getMeasurementApi();
 	}
 
 	@Override
@@ -146,7 +146,6 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 			throw new M2MCommunicationException("Datatype can't be handled by sender");
 		}
 		measurementAPI.create(representation);
-		LOG.debug("Sending 2 C8Y: GId + " + representation.getSource().getId().getValue() +  " Sensor: " + msg.getSensorId());
 	}
 
 	private int convert2Numerical(String value) {
@@ -159,30 +158,25 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		}
 	}
 	
-	
-	private ManagedObjectRepresentation getSource(String sensorId) { // throws M2MCommunicationException {
-//		
-//		ManagedObjectRepresentation representation = null;
-//		
-//		for (C8YSensorMapping c8ySensorMapping : sensorMappings) {
-//			if(c8ySensorMapping.getSensorName().equals(sensorId)) {
-//				
-//				// getting representation from c8y by GId from config service
-//				GId gid = new GId(c8ySensorMapping.getOwnGId());
-//				representation = inventoryAPI.get(gid);
-//			}
-//		}
-//		
-//		return representation;
+	private ManagedObjectRepresentation getSource(String sensorId) throws M2MCommunicationException {
 		
-		return null;
+		ManagedObjectRepresentation representation = null;
+		
+		for (C8YSensorMapping c8ySensorMapping : sensorMappings) {
+			if(c8ySensorMapping.getSensorName().equals(sensorId)) {
+				GId gid = new GId(c8ySensorMapping.getOwnGId());
+				representation = inventoryAPI.get(gid);
+			}
+		}
+		
+		return representation;
 	}
 
-//	public ConfigurationServiceFactory getConfigServiceFactory() {
-//		return configServiceFactory;
-//	}
-//
-//	public void setConfigServiceFactory(ConfigurationServiceFactory configServiceFactory) {
-//		this.configServiceFactory = configServiceFactory;
-//	}
+	public ConfigurationServiceFactory getConfigServiceFactory() {
+		return configServiceFactory;
+	}
+
+	public void setConfigServiceFactory(ConfigurationServiceFactory configServiceFactory) {
+		this.configServiceFactory = configServiceFactory;
+	}
 }
