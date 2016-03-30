@@ -30,7 +30,7 @@ public class CommandHandlerRS {
 	
 	private static final Logger LOG = Logger.getLogger(CommandHandlerRS.class);
 	
-	private String chainConfig = "M2M_POJO2Dummy.xml";
+	private String chainConfig = "M2M_POJO2OPCUA.xml";
 	
 	/**
 	 * here it goes

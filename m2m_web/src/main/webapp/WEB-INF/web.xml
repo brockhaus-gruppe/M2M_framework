@@ -1,21 +1,14 @@
-<web-app
-        version="3.0"
-        xmlns="http://java.sun.com/xml/ns/javaee"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
-        
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
 	<display-name>Archetype Created Web Application</display-name>
-	
-	<!-- WELD configuration	-->
+
+	<!-- WELD configuration -->
 	<listener>
 		<listener-class>org.jboss.weld.environment.servlet.Listener</listener-class>
 	</listener>
-	 
-	<resource-env-ref>
-        <resource-env-ref-name>BeanManager</resource-env-ref-name>
-        <resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
-    </resource-env-ref>
-    
+
 	<servlet>
 		<servlet-name>SensorDataReceiverServlet</servlet-name>
 		<servlet-class>de.brockhaus.m2m.web.SensorDataReceiverServlet</servlet-class>
@@ -24,7 +17,7 @@
 			<param-value>/WEB-INF/config.json</param-value>
 		</init-param>
 	</servlet>
- 
+
 	<servlet>
 		<servlet-name>SSEServlet</servlet-name>
 		<servlet-class>de.brockhaus.m2m.web.SSEServlet</servlet-class>
@@ -34,12 +27,10 @@
 		</init-param>
 	</servlet>
 
-		
+
 	<servlet>
 		<servlet-name>rest-ws</servlet-name>
-		<servlet-class>
-			com.sun.jersey.spi.container.servlet.ServletContainer
-		</servlet-class>
+		<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 		<init-param>
 			<param-name>com.sun.jersey.config.property.packages</param-name>
 			<param-value>de.brockhaus.m2m.web.rest</param-value>
@@ -50,4 +41,11 @@
 		<servlet-name>rest-ws</servlet-name>
 		<url-pattern>/rest/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- CDI in Tomcat -->
+	<resource-env-ref>
+		<resource-env-ref-name>BeanManager</resource-env-ref-name>
+		<resource-env-ref-type>javax.enterprise.inject.spi.BeanManager</resource-env-ref-type>
+	</resource-env-ref>
+
 </web-app>
