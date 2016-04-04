@@ -34,6 +34,7 @@ import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 import de.brockhaus.m2m.receiver.opcua.OPCUAHandler;
 //import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
+import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
 
 /**
  * The Prosys proprietary handler to read and write the data from an OPC Server.
@@ -347,6 +348,12 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 
 	public void setReadTags(int[] readTags) {
 		this.readTags = readTags;
+	}
+
+	@Override
+	public void setSender(OPCUASendingWorker sender) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

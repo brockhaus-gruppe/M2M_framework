@@ -2,6 +2,7 @@ package de.brockhaus.m2m.sender.opcua.prosys;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,9 @@ import com.prosysopc.ua.nodes.UaDataType;
 import com.prosysopc.ua.nodes.UaNode;
 import com.prosysopc.ua.nodes.UaVariable;
 
+import de.brockhaus.m2m.config.ConfigurationServiceLocal;
+import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
+import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
@@ -138,7 +142,11 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 
 	// the handler for dealing with the messages
 	private OPCUASendingWorker sender;
-		
+	
+	private ConfigurationServiceFactory configServiceFactory;
+	
+	private ArrayList<C8YSensorMapping> sensorMappings;
+	
 	// where we are connecting to
 	private String serverUri;
 
@@ -158,9 +166,6 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 	// select the tag corresponding to "Outputs" for writing
 	int targetTag;
 	
-	// map the relation between C8y's gids and tagIds
-	private HashMap<String, SensorMapping> sensorIds = new HashMap<String, SensorMapping>();
-
 	/*
 	 * this variable selects the possible data that can be obtained from the
 	 * node. In this case, the parameter "value" of the node (integer number 13
@@ -179,73 +184,86 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 	// constructor
 	public OPCUAProsysHandler(OPCUASendingWorker sender) {
 		this.sender = sender;
-		initSensorMapping();
 	}
 		
 	public void start() {
-		// initiate the connection to the server
 		try {
-				client = new UaClient(this.serverUri);
+			// initiate the sensorMappings
+			ConfigurationServiceLocal configService = ConfigurationServiceFactory.getConfigurationServiceLocal();				
+			HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors_outputs");
+			sensorMappings = new ArrayList<C8YSensorMapping>();
+			Collection<String> sensorMappingData = sensors.values();
+						
+			for (String sensorMappingString : sensorMappingData) {
+			/*
+			 *  ArrayIndex, own GId, parent GId, sensor name
+			 *  "0" : "0;15515;10979;Siemens PLC S7-1200.s7-1200.Outputs.motor conveyor belt drilling machine",
+			 */
+				String[] data = sensorMappingString.split(";");
+				sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
+			}
+			
+			// initiate the connection to the server
+			client = new UaClient(this.serverUri);
 
-				// define the security level in the OPC UA binary communications
-				client.setSecurityMode(SecurityMode.NONE);
+			// define the security level in the OPC UA binary communications
+			client.setSecurityMode(SecurityMode.NONE);
 
-				// create an Application Description which is sent to the server
-				ApplicationDescription appDescription = new ApplicationDescription();
-				appDescription.setApplicationName(new LocalizedText("OpcuaClient", Locale.ENGLISH));
+			// create an Application Description which is sent to the server
+			ApplicationDescription appDescription = new ApplicationDescription();
+			appDescription.setApplicationName(new LocalizedText("OpcuaClient", Locale.ENGLISH));
 
-				// ApplicationUri is a unique identifier for each running instance
-				appDescription.setApplicationUri("urn:localhost:UA:OpcuaClient");
+			// ApplicationUri is a unique identifier for each running instance
+			appDescription.setApplicationUri("urn:localhost:UA:OpcuaClient");
 
-				// identify the product and should therefore be the same for all instances
-				appDescription.setProductUri("urn:prosysopc.com:UA:OpcuaClient");
+			// identify the product and should therefore be the same for all instances
+			appDescription.setProductUri("urn:prosysopc.com:UA:OpcuaClient");
 
-				// define the type of application
-				appDescription.setApplicationType(ApplicationType.Client);
+			// define the type of application
+			appDescription.setApplicationType(ApplicationType.Client);
 
-				// define the client application certificate
-				final ApplicationIdentity identity = new ApplicationIdentity();
+			// define the client application certificate
+			final ApplicationIdentity identity = new ApplicationIdentity();
 				identity.setApplicationDescription(appDescription);
 
-				// assign the identity to the Client
-				client.setApplicationIdentity(identity);
+			// assign the identity to the Client
+			client.setApplicationIdentity(identity);
 
-				// define a limit of 1000 references per call to the server
-				client.getAddressSpace().setMaxReferencesPerNode(1000);
+			// define a limit of 1000 references per call to the server
+			client.getAddressSpace().setMaxReferencesPerNode(1000);
 
-				// receive only the hierarchical references between the nodes
-				client.getAddressSpace().setReferenceTypeId(Identifiers.HierarchicalReferences);
+			// receive only the hierarchical references between the nodes
+			client.getAddressSpace().setReferenceTypeId(Identifiers.HierarchicalReferences);
 
-				// connect to the server
-				client.connect();
+			// connect to the server
+			client.connect();
 		
-				// populate references
-				NodeId nodeId = Identifiers.RootFolder;
-				references = client.getAddressSpace().browse(nodeId);
+			// populate references
+			NodeId nodeId = Identifiers.RootFolder;
+			references = client.getAddressSpace().browse(nodeId);
 
-				// select the Objects node & browse the references for this node
-				nodeId = selectNode(1);
-				references = client.getAddressSpace().browse(nodeId);
+			// select the Objects node & browse the references for this node
+			nodeId = selectNode(1);
+			references = client.getAddressSpace().browse(nodeId);
 
-				// select the Channel node "Siemens PLC S7-1200" & browse its references
-				nodeId = selectNode(14);
-				references = client.getAddressSpace().browse(nodeId);
+			// select the Channel node "Siemens PLC S7-1200" & browse its references
+			nodeId = selectNode(14);
+			references = client.getAddressSpace().browse(nodeId);
 
-				// select the Device node "s7-1200" & browse its references
-				nodeId = selectNode(2);
-				references = client.getAddressSpace().browse(nodeId);
+			// select the Device node "s7-1200" & browse its references
+			nodeId = selectNode(2);
+			references = client.getAddressSpace().browse(nodeId);
 
-				// select the node "Outputs" & browse its references
-				nodeId = selectNode(4);
-				references = client.getAddressSpace().browse(nodeId);
-				
-			} catch (URISyntaxException | ServiceException | StatusException | ServiceResultException e) {
-				// TODO Auto-generated catch block
+			// select the node "Outputs" & browse its references
+			nodeId = selectNode(4);
+			references = client.getAddressSpace().browse(nodeId);				
+		} 
+		catch (URISyntaxException | ServiceException | StatusException | ServiceResultException e) {
 				e.printStackTrace();
-			}
+		}
 	}
 	
-	// tiny little helper to visualize the OPC structure
+		// tiny little helper to visualize the OPC structure
 		public String printStructure() {
 			// TODO implement
 			return "the master structure";
@@ -255,9 +273,9 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 		
 		LOG.debug("configure write for: " + sender.getMessage().getClass().getSimpleName());
 		M2MSensorMessage msg = (M2MSensorMessage) sender.getMessage();
-		String gid = msg.getSensorId();
+		String owngid = msg.getSensorId();
 		String value = msg.getValue();
-		setWriteTag(gid);
+		setWriteTag(owngid);
 		targetNode = selectNode(targetTag);
 		System.out.println(targetTag);
 		
@@ -293,8 +311,11 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 	}
 
 	public void setWriteTag(String gid) {	
-		SensorMapping sm = sensorIds.get(gid);
-		this.targetTag = sm.getTagId();
+		for (C8YSensorMapping temp : sensorMappings) {
+			if(temp.getOwnGId().equals(gid))
+				this.targetTag = temp.getArrayIndex();
+				break;
+		}
 	}
 
 
@@ -309,9 +330,11 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 		this.sender = sender;		
 	}
 	
-	public void initSensorMapping()
-	{
-		//TODO use config service
-		sensorIds.put("20000", new SensorMapping("20000","Siemens PLC S7-1200.s7-1200.Outputs.motor conveyor belt feed",1));
+	public ConfigurationServiceFactory getConfigServiceFactory() {
+		return configServiceFactory;
+	}
+
+	public void setConfigServiceFactory(ConfigurationServiceFactory configServiceFactory) {
+		this.configServiceFactory = configServiceFactory;
 	}
 }

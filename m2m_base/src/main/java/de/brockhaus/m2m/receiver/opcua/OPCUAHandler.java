@@ -1,6 +1,6 @@
 package de.brockhaus.m2m.receiver.opcua;
 
-//import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
+import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
 
 /**
  * The common interface for all OPC/UA related handlers
@@ -14,6 +14,6 @@ package de.brockhaus.m2m.receiver.opcua;
  */
 public interface OPCUAHandler {
 	void setReceiver(M2MMessageOpcUaReceiver receiver);
-//	void setSender(OPCUASendingWorker sender);
+	void setSender(OPCUASendingWorker sender);
 	void start();
 }

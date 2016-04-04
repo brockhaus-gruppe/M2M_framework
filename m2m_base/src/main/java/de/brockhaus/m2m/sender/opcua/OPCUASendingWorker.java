@@ -1,5 +1,9 @@
 package de.brockhaus.m2m.sender.opcua;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 import org.opcfoundation.ua.common.ServiceResultException;
 
@@ -7,7 +11,10 @@ import com.prosysopc.ua.ServiceException;
 import com.prosysopc.ua.StatusException;
 import com.prosysopc.ua.client.AddressSpaceException;
 
+import de.brockhaus.m2m.config.ConfigurationServiceLocal;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
+import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
+import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
