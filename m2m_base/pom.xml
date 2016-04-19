@@ -181,7 +181,13 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>1.8.7</version>
 		</dependency>
-
+		
+		<!-- CDI using WELD -->
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
+			<version>3.0.0.Alpha15</version>
+		</dependency>
 
 		<!-- Library from java.net, integrate Spring with JAX-WS -->
 		<dependency>

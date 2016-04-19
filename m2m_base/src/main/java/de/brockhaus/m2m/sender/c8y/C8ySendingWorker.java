@@ -19,14 +19,14 @@ import com.cumulocity.sdk.client.measurement.MeasurementApi;
 import de.brockhaus.m2m.config.ConfigurationServiceLocal;
 import de.brockhaus.m2m.handler.AbstractM2MMessageHandler;
 import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
-import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
+import de.brockhaus.m2m.integration.config.c8y.C8YDeviceMapping;
 import de.brockhaus.m2m.message.M2MCommunicationException;
 import de.brockhaus.m2m.message.M2MDataType;
 import de.brockhaus.m2m.message.M2MMessage;
 import de.brockhaus.m2m.message.M2MMultiMessage;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.sender.M2MSendingWorker;
-import de.brockhaus.m2m.sender.c8y.util.SensorMeasurement;
+import de.brockhaus.m2m.sender.c8y.util.DeviceMeasurement;
 
 /**
  * Ensure the cumulocity agent (c8y-agent) is up'n'running
@@ -64,10 +64,10 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	// cumulocity inventoryAPI
 	private InventoryApi inventoryAPI;
 	
-	private ConfigurationServiceFactory configServiceFactory;
-
-	private ArrayList<C8YSensorMapping> sensorMappings;
+	// device mappings for the set of devices used
+	private ArrayList<C8YDeviceMapping> deviceMappings;
 	
+	private ConfigurationServiceFactory configServiceFactory;
 	
 	public C8ySendingWorker() {
 		//lazy
@@ -80,15 +80,15 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 	public void init() {
 		ConfigurationServiceLocal configService = configServiceFactory.getConfigurationServiceLocal();		
 		
-		HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors_inputs");
-		sensorMappings = new ArrayList<C8YSensorMapping>();
-		Collection<String> sensorMappingData = sensors.values();
+		HashMap<String, String> devices = configService.getConfig().getConfigForElement("inputs devices");
+		deviceMappings = new ArrayList<C8YDeviceMapping>();
+		Collection<String> deviceMappingData = devices.values();
 		
-		for (String sensorMappingString : sensorMappingData) {
-			// ArrayIndex, own GId, parent GId, sensor name
-			//"0;10991;10979;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
-			String[] data = sensorMappingString.split(";");
-			sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
+		for (String deviceMappingString : deviceMappingData) {
+			// ArrayIndex, own GId, parent GId, device name
+			//"0;20468;10979;Siemens PLC S7-1200.s7-1200.Inputs.Phototransistor conveyer belt swap",
+			String[] data = deviceMappingString.split(";");
+			deviceMappings.add(new C8YDeviceMapping(new Integer(data[0]), data[3], data[1], data[2]));
 		}
 		// getting the data from config service: credentials
 		HashMap<String, String> credentials = configService.getConfig().getConfigForElement("credentials");
@@ -96,8 +96,8 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		this.pwd = credentials.get("pwd");
 		this.url = credentials.get("url");
 
-		// getting the data from config service: devices
-		HashMap<String, String> devices = configService.getConfig().getConfigForElement("devices");
+		// getting the data from config service: main device
+		HashMap<String, String> main_device = configService.getConfig().getConfigForElement("main device");
 		ArrayList<String> gids = new ArrayList<String>(devices.values());
 		this.gid = gids.get(0);
 
@@ -131,7 +131,7 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		representation.setSource(getSource(msg.getSensorId()));
 		representation.setTime(msg.getTime());
 
-		SensorMeasurement fragment = new SensorMeasurement();
+		DeviceMeasurement fragment = new DeviceMeasurement();
 		representation.set(fragment);
 
 		M2MDataType dataType = msg.getDatatype();
@@ -162,9 +162,9 @@ public class C8ySendingWorker extends AbstractM2MMessageHandler implements M2MSe
 		
 		ManagedObjectRepresentation representation = null;
 		
-		for (C8YSensorMapping c8ySensorMapping : sensorMappings) {
-			if(c8ySensorMapping.getSensorName().equals(sensorId)) {
-				GId gid = new GId(c8ySensorMapping.getOwnGId());
+		for (C8YDeviceMapping c8yDeviceMapping : deviceMappings) {
+			if(c8yDeviceMapping.getDeviceName().equals(sensorId)) {
+				GId gid = new GId(c8yDeviceMapping.getOwnGId());
 				representation = inventoryAPI.get(gid);
 			}
 		}

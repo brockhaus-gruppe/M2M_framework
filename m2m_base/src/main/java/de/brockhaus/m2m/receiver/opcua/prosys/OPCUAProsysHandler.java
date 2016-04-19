@@ -325,7 +325,6 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		this.receiver = receiver;
 	}
 
-
 	public String getServerUri() {
 		return serverUri;
 	}
@@ -355,12 +354,4 @@ public class OPCUAProsysHandler implements MonitoredDataItemListener, OPCUAHandl
 		// TODO Auto-generated method stub
 		
 	}
-
-
-//	@Override
-//	public void setSender(OPCUASendingWorker sender) {
-//		// TODO Auto-generated method stub
-//		
-//	}	
-
 }

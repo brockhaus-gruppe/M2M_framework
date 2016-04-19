@@ -3,53 +3,37 @@ package de.brockhaus.m2m.sender.opcua.prosys;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.log4j.Logger;
-import org.opcfoundation.ua.builtintypes.DataValue;
+import org.jboss.weld.environment.se.WeldContainer;
 import org.opcfoundation.ua.builtintypes.LocalizedText;
 import org.opcfoundation.ua.builtintypes.NodeId;
 import org.opcfoundation.ua.builtintypes.UnsignedInteger;
 import org.opcfoundation.ua.common.ServiceResultException;
 import org.opcfoundation.ua.core.ApplicationDescription;
 import org.opcfoundation.ua.core.ApplicationType;
-import org.opcfoundation.ua.core.Attributes;
 import org.opcfoundation.ua.core.Identifiers;
-import org.opcfoundation.ua.core.MonitoringMode;
 import org.opcfoundation.ua.core.ReferenceDescription;
 import org.opcfoundation.ua.transport.security.SecurityMode;
 
 import com.prosysopc.ua.ApplicationIdentity;
 import com.prosysopc.ua.ServiceException;
-import com.prosysopc.ua.SessionActivationException;
 import com.prosysopc.ua.StatusException;
 import com.prosysopc.ua.client.AddressSpaceException;
-import com.prosysopc.ua.client.ConnectException;
-import com.prosysopc.ua.client.InvalidServerEndpointException;
-import com.prosysopc.ua.client.MonitoredDataItem;
-import com.prosysopc.ua.client.MonitoredDataItemListener;
-import com.prosysopc.ua.client.MonitoredItem;
-import com.prosysopc.ua.client.Subscription;
 import com.prosysopc.ua.client.UaClient;
-import com.prosysopc.ua.nodes.UaDataType;
 import com.prosysopc.ua.nodes.UaNode;
-import com.prosysopc.ua.nodes.UaVariable;
 
 import de.brockhaus.m2m.config.ConfigurationServiceLocal;
 import de.brockhaus.m2m.integration.config.ConfigurationServiceFactory;
-import de.brockhaus.m2m.integration.config.c8y.C8YSensorMapping;
-import de.brockhaus.m2m.message.M2MCommunicationException;
-import de.brockhaus.m2m.message.M2MDataType;
-import de.brockhaus.m2m.message.M2MMessage;
+import de.brockhaus.m2m.integration.config.ConfigurationServiceImpl;
+import de.brockhaus.m2m.integration.config.c8y.C8YDeviceMapping;
 import de.brockhaus.m2m.message.M2MSensorMessage;
 import de.brockhaus.m2m.receiver.opcua.M2MMessageOpcUaReceiver;
 import de.brockhaus.m2m.receiver.opcua.OPCUAHandler;
-import de.brockhaus.m2m.receiver.opcua.prosys.OPCProsysSimulationServer;
 import de.brockhaus.m2m.sender.opcua.OPCUASendingWorker;
-import de.brockhaus.m2m.sender.c8y.util.SensorMapping;
 
 /**
  * The Prosys proprietary handler to write the data to an OPC Server.
@@ -109,20 +93,22 @@ import de.brockhaus.m2m.sender.c8y.util.SensorMapping;
  * 4 - Outputs: FolderType (ReferenceType=Organizes, BrowseName=2:Outputs) 
  * 5 - Tag1: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Tag1)
  * 
- * => we go for Input so we picked '3', if we would like to set values we will go for Outputs 
+ * => we go for Outputs so we picked '4', because we would like to set values 
  * 
  * Later on we picked the relevant info about the tags: 
- * 0 - Phototransistor conveyer belt swap: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor conveyer belt swap) 
- * 1 - Phototransistor drilling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor drilling machine) 
- * 2 - Phototransistor loading station: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor loading station) 
- * 3 - Phototransistor milling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor milling machine) 
- * 4 - Phototransistor slider 1: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Phototransistor slider 1) 
- * 5 - Push-button slider 1 front: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 1 front) 
- * 6 - Push-button slider 1 rear: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 1 rear) 
- * 7 - Push-button slider 2 front: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 2 front) 
- * 8 - Push-button slider 2 rear: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:Push-button slider 2 rear)
+ * 0 - motor conveyor belt drilling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor conveyor belt drilling machine)
+ * 1 - motor conveyor belt feed: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor conveyor belt feed)
+ * 2 - motor conveyor belt milling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor conveyor belt milling machine)
+ * 3 - motor conveyor belt swap: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor conveyor belt swap)
+ * 4 - motor drilling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor drilling machine)
+ * 5 - motor milling machine: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor milling machine)
+ * 6 - motor slider 1 backward: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor slider 1 backward)
+ * 7 - motor slider 1 forward: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor slider 1 forward)
+ * 8 - motor slider 2 backward: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor slider 2 backward)
+ * 9 - motor slider 2 forward: BaseVariableType (ReferenceType=HasComponent, BrowseName=2:motor slider 2 forward)
  * 
  * These are put into the TagArray ...
+ * Notice: In the practice only the tags 1, 3, 7 and 9 can be written.
  *
  * 
  * TODO get the tree-like structure visualized within printStructure()
@@ -143,9 +129,13 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 	// the handler for dealing with the messages
 	private OPCUASendingWorker sender;
 	
+	// CDI Weld variables
 	private ConfigurationServiceFactory configServiceFactory;
 	
-	private ArrayList<C8YSensorMapping> sensorMappings;
+	private ConfigurationServiceLocal configService;
+	
+	// device mappings between Cumulocity and OPCUAProsysHandler deviceIds
+	private ArrayList<C8YDeviceMapping> deviceMappings = new ArrayList<C8YDeviceMapping>();
 	
 	// where we are connecting to
 	private String serverUri;
@@ -188,19 +178,29 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 		
 	public void start() {
 		try {
-			// initiate the sensorMappings
-			ConfigurationServiceLocal configService = ConfigurationServiceFactory.getConfigurationServiceLocal();				
-			HashMap<String, String> sensors = configService.getConfig().getConfigForElement("sensors_outputs");
-			sensorMappings = new ArrayList<C8YSensorMapping>();
-			Collection<String> sensorMappingData = sensors.values();
+			List<String> containerlist = WeldContainer.getRunningContainerIds();
+			if(containerlist.isEmpty())
+			{
+				// create a new Weld instance
+				configService = ConfigurationServiceFactory.getConfigurationServiceLocal();
+			}
+			else
+			{
+				// use the already running Weld instance
+				configService = WeldContainer.instance("STATIC_INSTANCE").select(ConfigurationServiceImpl.class).get();
+			}
+			
+			// initiate the deviceMappings
+			HashMap<String, String> devices = configService.getConfig().getConfigForElement("outputs devices");
+			Collection<String> deviceMappingData = devices.values();
 						
-			for (String sensorMappingString : sensorMappingData) {
+			for (String deviceMappingString : deviceMappingData) {
 			/*
-			 *  ArrayIndex, own GId, parent GId, sensor name
-			 *  "0" : "0;15515;10979;Siemens PLC S7-1200.s7-1200.Outputs.motor conveyor belt drilling machine",
-			 */
-				String[] data = sensorMappingString.split(";");
-				sensorMappings.add(new C8YSensorMapping(new Integer(data[0]), data[3], data[1], data[2]));
+			 *  ArrayIndex, own GId, parent GId, device name
+			 *  "0" : "0;20477;10979;Siemens PLC S7-1200.s7-1200.Outputs.motor conveyor belt drilling machine",
+		     */
+				String[] data = deviceMappingString.split(";");
+				deviceMappings.add(new C8YDeviceMapping(new Integer(data[0]), data[3], data[1], data[2]));
 			}
 			
 			// initiate the connection to the server
@@ -275,9 +275,8 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 		M2MSensorMessage msg = (M2MSensorMessage) sender.getMessage();
 		String owngid = msg.getSensorId();
 		String value = msg.getValue();
-		setWriteTag(owngid);
+		setWritingTag(owngid);
 		targetNode = selectNode(targetTag);
-		System.out.println(targetTag);
 		
 		LOG.info("\n[-- WRITING VALUES TO THE SERVER NODES --]");	
 		
@@ -310,19 +309,18 @@ public class OPCUAProsysHandler implements OPCUAHandler {
 		return targetTag;
 	}
 
-	public void setWriteTag(String gid) {	
-		for (C8YSensorMapping temp : sensorMappings) {
-			if(temp.getOwnGId().equals(gid))
+	public void setWritingTag(String gid) {	
+		for (C8YDeviceMapping temp : deviceMappings) {
+			if(temp.getOwnGId().equals(gid)) {
 				this.targetTag = temp.getArrayIndex();
 				break;
+			}
 		}
 	}
 
-
 	@Override
 	public void setReceiver(M2MMessageOpcUaReceiver receiver) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override

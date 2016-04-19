@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * this mapping contains all data relevant for sensor mapped to cumulocity (e.g. GIds) 
+ * this mapping contains all data relevant for device mapped to cumulocity (e.g. GIds) 
  *
  * Project: m2m-base
  *
@@ -16,21 +16,21 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 
 @XmlRootElement
-public class C8YSensorMapping implements Serializable {
+public class C8YDeviceMapping implements Serializable {
 	
 	private int arrayIndex;
-	private String sensorName;
+	private String deviceName;
 	private String ownGId;
 	private String parentGId;
 	
-	public C8YSensorMapping() {
+	public C8YDeviceMapping() {
 
 	}
 	
-	public C8YSensorMapping(int arrayIndex, String sensorName, String ownGId, String parentGId) {
+	public C8YDeviceMapping(int arrayIndex, String deviceName, String ownGId, String parentGId) {
 		super();
 		this.arrayIndex = arrayIndex;
-		this.sensorName = sensorName;
+		this.deviceName = deviceName;
 		this.ownGId = ownGId;
 		this.parentGId = parentGId;
 	}
@@ -43,12 +43,12 @@ public class C8YSensorMapping implements Serializable {
 		this.arrayIndex = arrayIndex;
 	}
 
-	public String getSensorName() {
-		return sensorName;
+	public String getDeviceName() {
+		return deviceName;
 	}
 
-	public void setSensorName(String sensorName) {
-		this.sensorName = sensorName;
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	public String getOwnGId() {
@@ -69,6 +69,6 @@ public class C8YSensorMapping implements Serializable {
 
 	@Override
 	public String toString() {
-		return this.arrayIndex + ";" + this.ownGId + ";" + this.parentGId + ";" + this.sensorName;
+		return this.arrayIndex + ";" + this.ownGId + ";" + this.parentGId + ";" + this.deviceName;
 	}
 }

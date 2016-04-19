@@ -17,11 +17,11 @@ import com.cumulocity.model.measurement.MeasurementValue;
  * @author jperez, Feb 12, 2016
  *
  */
-public class SensorMeasurement extends AbstractDynamicProperties {
+public class DeviceMeasurement extends AbstractDynamicProperties {
 	
 	private static final long serialVersionUID = 1L;
-	public static final String SENSOR_UNIT = "";
-    private MeasurementValue v = new MeasurementValue(SENSOR_UNIT);
+	public static final String DEVICE_UNIT = "";
+    private MeasurementValue v = new MeasurementValue(DEVICE_UNIT);
     
     @JSONProperty("Value")
     public MeasurementValue getV() {
@@ -38,7 +38,7 @@ public class SensorMeasurement extends AbstractDynamicProperties {
     }
 
     public void setValue(BigDecimal value) {
-        v = new MeasurementValue(SENSOR_UNIT);
+        v = new MeasurementValue(DEVICE_UNIT);
         v.setValue(value);
     }
 }
